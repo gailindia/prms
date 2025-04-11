@@ -1,0 +1,47 @@
+const String kBaseUrl =
+    'https://gailebank.gail.co.in/GAIL_APIs/api/PRMS/';
+const String kIsLoginApi = "PRMS_Login_dbd";
+// const String kIsLoginApi = "PRMS_Login_aud";
+const String kIsVersionApi = "Version_dbd";
+// const String kIsVersionApi = "Version_aud";
+const String kIsSendOTPApi = "PRMS_Login_OTP_dbd";
+// const String kIsSendOTPApi = "PRMS_Login_OTP_aud";
+const String kIsVerifyOTPApi = "PRMS_Verify_OTP_dbd";
+// const String kIsVerifyOTPApi = "PRMS_Verify_OTP_aud";
+const String kGetClaimTypes = "GetClaimTypes_dbd?type=";
+// const String kGetClaimTypes = "GetClaimTypes_aud?type=";
+const String kGetpatientName = "GetpatientName_dbd?user_id=";
+// const String kGetpatientName = "GetpatientName_aud?user_id=";
+const String kGetSystemMedicine = "GetSystemMedicine_dbd";
+// const String kGetSystemMedicine = "GetSystemMedicine_aud";
+const String kGetChronicalNormal = "GetChronicalNormal_dbd";
+// const String kGetChronicalNormal = "GetChronicalNormal_aud";
+const String kGetOtherClaim = "GetOther_Claim_dbd";
+// const String kGetOtherClaim = "GetOther_Claim_aud";
+const String kGetClaimStatusList = "PRMS_CLAIM_STATUS_dbd";
+// const String kGetClaimStatusList = "PRMS_CLAIM_STATUS_aud";
+const String kGetClaimDetailsList = "PRMS_CLAIM_DETAILS_dbd";
+// const String kGetClaimDetailsList = "PRMS_CLAIM_DETAILS_aud";
+const String kGetPrmsDraftDetails = "PRMS_DRAFT_DETAILS_dbd";
+// const String kGetPrmsDraftDetails = "PRMS_DRAFT_DETAILS_aud";
+const String kGetPrmsOPDraft = "PRMS_OPD_DRAFT_dbd";
+// const String kGetPrmsOPDraft = "PRMS_OPD_DRAFT_aud";
+const String kGetTreatmenttype = "GetTreatmenttype_dbd";
+// const String kGetTreatmenttype = "GetTreatmenttype_aud";
+const String kGetDomiciliaryTreat = "GetDomiciliaryTreat_dbd";
+// const String kGetDomiciliaryTreat = "GetDomiciliaryTreat_aud";
+const String kGetCriticalIllness = "GetCriticalIllness_dbd";
+// const String kGetCriticalIllness = "GetCriticalIllness_aud";
+const String kGetPRMSCLAIMDELETION = "PRMS_CLAIM_REQUEST_DELETION_dbd";
+// const String kGetPRMSCLAIMDELETION = "PRMS_CLAIM_REQUEST_DELETION_aud";
+const String kGetUpdateDraftData="PRMS_OPD_DRAFT_UPDATE_dbd";
+// const String kGetUpdateDraftData="PRMS_OPD_DRAFT_UPDATE_aud";
+const String kGetsubmitData="PRMS_OPD_SUBMIT_ClaimWise2_dbd?requestno=";
+// const String kGetsubmitData="PRMS_OPD_SUBMIT_ClaimWise2_aud?requestno=";
+const String kGetReqDetails="PRMS_CLAIM_REQUESTNO_DETAILS_dbd";
+// const String kGetReqDetails="PRMS_CLAIM_REQUESTNO_DETAILS_aud";
+const String kGetFinancialYear="finYear_Ent";
+// const String kGetFinancialYear="finYear_Ent_aud";
+const String KGetdataDetailOnDD="dataDetailOnDD?";
+
+
