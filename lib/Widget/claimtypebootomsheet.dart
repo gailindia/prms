@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:prms/Model/other_claim_model.dart';
-import 'package:prms/styles/text_style.dart'; 
+import '../Model/other_claim_model.dart';
+import '../styles/text_style.dart';
 
 
 

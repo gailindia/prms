@@ -1,20 +1,21 @@
 import 'dart:io';
 
+import 'package:PRMS/Screens/update_form_data.dart';
 import 'package:flutter/material.dart';
 import 'package:multiutillib/multiutillib_flutter.dart';
 import 'package:multiutillib/utils/utils.dart';
-import 'package:prms/Model/claim_draft_model.dart';
-import 'package:prms/Provider/homeprovider.dart';
-import 'package:prms/Screens/ClaimDetails/ClaimDetailsList.dart';
-import 'package:prms/Screens/ClaimForm/claim_from_screen.dart';
-import 'package:prms/Screens/ClaimStatus/claim_status_list.dart';
-import 'package:prms/Screens/my_profile.dart';
-import 'package:prms/Screens/update_form_data.dart';
+
  
 import 'package:provider/provider.dart';
 import 'package:secure_shared_preferences/secure_shared_preferences.dart';
 
+import '../Model/claim_draft_model.dart';
+import '../Provider/homeprovider.dart';
 import '../Widget/alert_dialog.dart';
+import 'ClaimDetails/ClaimDetailsList.dart';
+import 'ClaimForm/claim_from_screen.dart';
+import 'ClaimStatus/claim_status_list.dart';
+import 'my_profile.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {

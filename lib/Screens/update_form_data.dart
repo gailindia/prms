@@ -2,21 +2,23 @@ import 'dart:io';
 
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:prms/Model/claim_draft_model.dart';
-import 'package:prms/Model/claim_type_model.dart';
-import 'package:prms/Provider/claimtypeProvider.dart';
-import 'package:prms/Provider/homeprovider.dart';
-import 'package:prms/Screens/view_image.dart';
-import 'package:prms/Widget/bottomsheetwidget.dart';
-import 'package:prms/Widget/claimtypebootomsheet.dart';
-import 'package:prms/Widget/customAppBar.dart';
-import 'package:prms/Widget/patientBottomSheet.dart';
-import 'package:prms/Widget/systemmedicinewidget.dart';
-import 'package:prms/styles/text_style.dart'; 
+import '../Model/claim_draft_model.dart';
+import '../Model/claim_type_model.dart';
+import '../Provider/claimtypeProvider.dart';
+import '../Provider/homeprovider.dart';
+import '../Screens/view_image.dart';
+import '../Widget/bottomsheetwidget.dart';
+import '../Widget/claimtypebootomsheet.dart';
+import '../Widget/customAppBar.dart';
+import '../Widget/patientBottomSheet.dart';
+import '../Widget/systemmedicinewidget.dart';
+import '../styles/text_style.dart';
  
 import 'package:provider/provider.dart';
 
+import '../Model/claim_draft_model.dart';
 import '../Widget/alert_dialog.dart';
 import 'package:http/http.dart' as http;
 
@@ -203,12 +205,24 @@ class _UpdateFormDataState extends State<UpdateFormData> {
                   width: MediaQuery.of(context).size.width * 1,
                   child: ElevatedButton(
                       onPressed: () {
-                        postModel.getDataUpdate(
-                            context,
-                            widget.todo!.claimid,
-                            widget.todo!.claimType,
-                            widget.todo!.patientName,
-                            postModel.treatment);
+                        print("postModel.claimtype ${postModel.claimtype}  ${widget.todo!.claimType}");
+                        if(widget.todo!.claimType == '2'){
+                          if (validationMedicine(postModel)) {
+                            postModel.getDataUpdate(
+                                context,
+                                widget.todo!.claimid,
+                                widget.todo!.claimType,
+                                widget.todo!.patientName,
+                                postModel.treatment);
+                          }
+                        }else {
+                          postModel.getDataUpdate(
+                              context,
+                              widget.todo!.claimid,
+                              widget.todo!.claimType,
+                              widget.todo!.patientName,
+                              postModel.treatment);
+                        }
 
                         // postModel.getDataToList(postModel.claimtype,postModel.patientname,postModel.consultationNumberController.text,postModel.consultationDate,postModel.systemofmedicine,postModel.physicianController.text,postModel.chronical,postModel.amountController.text,postModel.remarksController.text,postModel.);
                       },
@@ -1475,9 +1489,10 @@ class _UpdateFormDataState extends State<UpdateFormData> {
               )),
               Expanded(
                 child: Container(
-                  height: 45,
                   child: TextField(
                     readOnly: true,
+                    minLines: 1,
+                    maxLines: 4,
                     controller: postModel.billNoController,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
@@ -1487,6 +1502,20 @@ class _UpdateFormDataState extends State<UpdateFormData> {
                 ),
               ),
             ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: BottomSheetWidget(
+            content: widget.todo!.illnessType,
+            heading: "Chronical/Normal",
+            claimtype: postModel.chronicaldata!,
+            onpressed: (val) {
+              postModel.chronical = val;
+              postModel.consultationDate = '--Select Date--';
+              postModel.prescriptionDate ='--Select Date--';
+              setState(() {});
+            },
           ),
         ),
         Padding(
@@ -1666,60 +1695,111 @@ class _UpdateFormDataState extends State<UpdateFormData> {
                         String fromMarch = "31/03/${suffix}";
 
                         postModel.prescriptionDate =
-                            await _selectPrescriptionDate(context);
+                        await _selectPrescriptionDate(context, DateFormat('d/M/y').parse(postModel.consultationDate));
 
-                        ///Financial year check
-                        if (postModel.prescriptionDate != '--Select Date--' &&
-                            postModel.consultationDate != '--Select Date--') {
-                          var dateTime1 = DateFormat('d/M/y')
-                              .parse(postModel.consultationDate);
-                          var dateTime2 = DateFormat('d/M/y')
-                              .parse(postModel.prescriptionDate);
-                          DateTime d = DateFormat("dd/MM/yyyy")
-                              .parse(postModel.prescriptionDate);
-                          DateTime fromFinancialYear =
-                              DateFormat("dd/MM/yyyy").parse(fromApril);
-                          DateTime toFinancialYear =
-                              DateFormat("dd/MM/yyyy").parse(fromMarch);
-                          if ((d.isAfter(fromFinancialYear) ||
-                                  d.isAtSameMomentAs(fromFinancialYear)) &&
-                              (d.isBefore(toFinancialYear) ||
-                                  d.isAtSameMomentAs(toFinancialYear))) {
-                            if (dateTime2.isAfter(dateTime1)) {
+                        var chronical_non = postModel.chronical;
+                        print("chronical non chronical :: $chronical_non");
+
+                        var dateTime1 =
+                        DateFormat('d/M/y').parse(postModel.consultationDate);
+                        var dateTime2 = DateFormat('d/M/y')
+                            .parse(postModel.prescriptionDate);
+                        DateTime dOneMonth = DateTime(dateTime2.year, dateTime2.month + 1, dateTime2.day);
+
+                        DateTime dSixMonth = DateTime(dateTime2.year, dateTime2.month + 6, dateTime2.day);
+                        print(" DATE FROM :: $dSixMonth" );
+                        if(chronical_non == "Normal"){
+                          if (postModel.prescriptionDate != '--Select Date--' &&
+                              postModel.consultationDate != '--Select Date--') {
+                            if(dOneMonth.isBefore(dateTime1) || dOneMonth.isAtSameMomentAs(dateTime1)){
                               DialogUtils.showCustomDialog(context,
                                   title: "PRMS",
                                   description:
-                                      'Prescription date cannot be greater than bill date',
+                                  'Prescription date cannot be greater than One Month to bill date',
                                   onpositivePressed: () {
-                                Navigator.pop(context);
-                                postModel.prescriptionDate = "--Select Date--";
-                                // postModel.attachFile = false;
-                                postModel.notifyListeners();
-                              });
+                                    Navigator.pop(context);
+                                    postModel.prescriptionDate = "--Select Date--";
+                                    // postModel.attachFile = false;
+                                    postModel.notifyListeners();
+                                  });
+                            }else{
+
                             }
-                          } else {
-                            DialogUtils.showCustomDialog(context,
-                                title: "PRMS",
-                                description:
-                                    'Prescription Date does not lie within the financial year',
-                                onpositivePressed: () {
-                              Navigator.pop(context);
-                              postModel.prescriptionDate = "--Select Date--";
-                              // postModel.attachFile = false;
-                              postModel.notifyListeners();
-                            });
+
                           }
-                        } else {
-                          DialogUtils.showCustomDialog(context,
-                              title: "PRMS",
-                              description: 'Bill Date cannot be empty',
-                              onpositivePressed: () {
-                            Navigator.pop(context);
-                            postModel.prescriptionDate = "--Select Date--";
-                            // postModel.attachFile = false;
-                            postModel.notifyListeners();
-                          });
+                        }else{
+                          if (postModel.prescriptionDate != '--Select Date--' &&
+                              postModel.consultationDate != '--Select Date--') {
+                            if(dSixMonth.isBefore(dateTime1) || dSixMonth.isAtSameMomentAs(dateTime1)){
+                              DialogUtils.showCustomDialog(context,
+                                  title: "PRMS",
+                                  description:
+                                  'Prescription date cannot be greater than Six Month to bill date',
+                                  onpositivePressed: () {
+                                    Navigator.pop(context);
+                                    postModel.prescriptionDate = "--Select Date--";
+                                    // postModel.attachFile = false;
+                                    postModel.notifyListeners();
+                                  });
+                            }else{
+
+                            }
+
+                          }
                         }
+
+                        // ///Financial year check
+                        // if (postModel.prescriptionDate != '--Select Date--' &&
+                        //     postModel.consultationDate != '--Select Date--') {
+                        //   var dateTime1 = DateFormat('d/M/y')
+                        //       .parse(postModel.consultationDate);
+                        //   var dateTime2 = DateFormat('d/M/y')
+                        //       .parse(postModel.prescriptionDate);
+                        //   DateTime d = DateFormat("dd/MM/yyyy")
+                        //       .parse(postModel.prescriptionDate);
+                        //   DateTime fromFinancialYear =
+                        //       DateFormat("dd/MM/yyyy").parse(fromApril);
+                        //   DateTime toFinancialYear =
+                        //       DateFormat("dd/MM/yyyy").parse(fromMarch);
+                        //   if ((d.isAfter(fromFinancialYear) ||
+                        //           d.isAtSameMomentAs(fromFinancialYear)) &&
+                        //       (d.isBefore(toFinancialYear) ||
+                        //           d.isAtSameMomentAs(toFinancialYear))) {
+                        //     if (dateTime2.isAfter(dateTime1)) {
+                        //       DialogUtils.showCustomDialog(context,
+                        //           title: "PRMS",
+                        //           description:
+                        //               'Prescription date cannot be greater than bill date',
+                        //           onpositivePressed: () {
+                        //         Navigator.pop(context);
+                        //         postModel.prescriptionDate = "--Select Date--";
+                        //         // postModel.attachFile = false;
+                        //         postModel.notifyListeners();
+                        //       });
+                        //     }
+                        //   } else {
+                        //     DialogUtils.showCustomDialog(context,
+                        //         title: "PRMS",
+                        //         description:
+                        //             'Prescription Date does not lie within the financial year',
+                        //         onpositivePressed: () {
+                        //       Navigator.pop(context);
+                        //       postModel.prescriptionDate = "--Select Date--";
+                        //       // postModel.attachFile = false;
+                        //       postModel.notifyListeners();
+                        //     });
+                        //   }
+                        // } else {
+                        //   DialogUtils.showCustomDialog(context,
+                        //       title: "PRMS",
+                        //       description: 'Bill Date cannot be empty',
+                        //       onpositivePressed: () {
+                        //     Navigator.pop(context);
+                        //     postModel.prescriptionDate = "--Select Date--";
+                        //     // postModel.attachFile = false;
+                        //     postModel.notifyListeners();
+                        //   });
+                        // }
 
                         setState(() {});
                       },
@@ -1742,18 +1822,6 @@ class _UpdateFormDataState extends State<UpdateFormData> {
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: BottomSheetWidget(
-            content: widget.todo!.illnessType,
-            heading: "Chronical/Normal",
-            claimtype: postModel.chronicaldata!,
-            onpressed: (val) {
-              postModel.chronical = val;
-              setState(() {});
-            },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
               Expanded(
@@ -1763,12 +1831,27 @@ class _UpdateFormDataState extends State<UpdateFormData> {
               )),
               Expanded(
                 child: Container(
-                  height: 45,
+                  // height: 45,
                   child: TextField(
                     controller: postModel.amountController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
+                    focusNode: postModel.focusNodeamount,
+                    minLines: 1,
+                    maxLength: 9,
+                    autocorrect: false,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
                       hintText: 'Enter Claimed Amount',
+                      contentPadding: const EdgeInsets.all(12),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide:
+                        const BorderSide(width: 1, color: Colors.indigo),
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(width: 2, color: Colors.indigo),
+                      ),
                     ),
                   ),
                 ),
@@ -1789,7 +1872,7 @@ class _UpdateFormDataState extends State<UpdateFormData> {
                 )),
                 Expanded(
                   child: Container(
-                    height: 45,
+                    // height: 45,
                     child: GestureDetector(
                         onTap: () {
                           var s = widget.todo!.imgDoc.split(".");
@@ -2980,19 +3063,22 @@ class _UpdateFormDataState extends State<UpdateFormData> {
         .toString();
   }
 
-  _selectPrescriptionDate(BuildContext context) async {
+  _selectPrescriptionDate(BuildContext context,DateTime lastdate) async {
     final DateTime? selected = await showDatePicker(
       context: context,
-      initialDate: selectedDate1,
+      initialDate: lastdate,
       firstDate: DateTime(2010),
-      lastDate: DateTime.now(),
+      lastDate: lastdate,
     );
     if (selected != null && selected != selectedDate1)
       setState(() {
         selectedDate1 = selected;
         toDate = selectedDate1.toString();
       });
+    return "${selectedDate1.day}/${selectedDate1.month}/${selectedDate1.year}"
+        .toString();
   }
+
 
   _selectConsultationDate(BuildContext context) async {
     final DateTime? selected = await showDatePicker(
@@ -3295,4 +3381,23 @@ class _UpdateFormDataState extends State<UpdateFormData> {
       setState(() {});
     }
   }
+
+  bool validationMedicine(ClaimTypeProvider postModel) {
+    var dateTime1 = DateFormat('d/M/y').parse(postModel.billDate);
+    var dateTime2 = DateFormat('d/M/y').parse(postModel.prescriptionDate);
+
+     if (postModel.amountController.text.isEmpty) {
+      DialogUtils.showCustomDialog(context,
+          title: "PRMS",
+          description: 'Please Enter Amount', onpositivePressed: () {
+            Navigator.pop(context);
+          });
+      return false;
+    }  else {
+      return true;
+    }
+  }
+
 }
+
+

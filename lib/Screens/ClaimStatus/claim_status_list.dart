@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:prms/Provider/medicalclaimstatusprovider.dart';
-import 'package:prms/Screens/ClaimStatus/claim_status_details.dart';
-import 'package:prms/Widget/customAppBar.dart';
+import '/Provider/medicalclaimstatusprovider.dart';
+import '/Screens/ClaimStatus/claim_status_details.dart';
+import '/Widget/customAppBar.dart';
  
 import 'package:provider/provider.dart';
 

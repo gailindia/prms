@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:prms/Model/claim_type_model.dart';
-import 'package:prms/styles/text_style.dart';
+import '../Model/claim_type_model.dart';
+import '../styles/text_style.dart';
  
 
 class PatientBottomSheetWidget extends StatefulWidget {

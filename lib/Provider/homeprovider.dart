@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:multiutillib/utils/utils.dart';
-import 'package:prms/Auth/login_screen.dart';
-import 'package:prms/Model/claim_draft_model.dart';
-import 'package:prms/Rest/api_services.dart';
+import '../Auth/login_screen.dart';
+import '../Model/claim_draft_model.dart';
+import '../Rest/api_services.dart';
  
 import 'package:secure_shared_preferences/secure_shared_preferences.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
