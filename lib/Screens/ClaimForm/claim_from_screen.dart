@@ -3,17 +3,17 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:prms/Model/claim_type_model.dart';
-import 'package:prms/Provider/claimtypeProvider.dart';
-import 'package:prms/Provider/homeprovider.dart';
-import 'package:prms/Screens/home_screen.dart';
-import 'package:prms/Widget/alert_dialog.dart';
-import 'package:prms/Widget/bottomsheetwidget.dart';
-import 'package:prms/Widget/claimtypebootomsheet.dart';
-import 'package:prms/Widget/customAppBar.dart';
-import 'package:prms/Widget/patientBottomSheet.dart';
-import 'package:prms/Widget/systemmedicinewidget.dart';
-import 'package:prms/styles/text_style.dart';
+import '/Model/claim_type_model.dart';
+import '/Provider/claimtypeProvider.dart';
+import '/Provider/homeprovider.dart';
+import '/Screens/home_screen.dart';
+import '/Widget/alert_dialog.dart';
+import '/Widget/bottomsheetwidget.dart';
+import '/Widget/claimtypebootomsheet.dart';
+import '/Widget/customAppBar.dart';
+import '/Widget/patientBottomSheet.dart';
+import '/Widget/systemmedicinewidget.dart';
+import '/styles/text_style.dart';
  
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -149,8 +149,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           child: Container(
                             // height: 55,
                             child: DropdownSearch<String>(
-                              dropdownDecoratorProps: DropDownDecoratorProps(
-                                dropdownSearchDecoration: InputDecoration(
+                              decoratorProps: DropDownDecoratorProps(
+                                decoration: InputDecoration(
                                   labelText: "Select Claim Type",
                                   //hintText: "Select Duration",
                                   enabledBorder: OutlineInputBorder(
@@ -159,7 +159,7 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                                   // labelStyle: TextStyle( fontSize: 20),
                                 ),
                               ),
-                              items: claimtype,
+                              items:(filter, infiniteScrollProps)=> claimtype,
                               onChanged: (String? _opdClaim) async {
                                 homeModel.fin_year = '';
                                 SecureSharedPref preferences =
@@ -221,13 +221,17 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                               value == null || value == "--Select--"
                                   ? 'field required'
                                   : null,
-                              popupProps: PopupProps.menu(
-                                  itemBuilder: (context, item, isSelected) {
-                                    return Container(
-                                      padding: const EdgeInsets.all(8),
-                                      child: Text(item,textScaleFactor: MediaQuery.of(context).textScaleFactor,),
-                                    );
-                                  }),
+                              // popupProps: PopupProps.menu(
+                              //   showSelectedItems: true,
+                              //   fit: FlexFit.loose,
+                              //   constraints: BoxConstraints(maxHeight: 200),
+                              // ),
+                                  // itemBuilder: (context, item, isSelected,isSelected) {
+                                  //   return Container(
+                                  //     padding: const EdgeInsets.all(8),
+                                  //     child: Text(item,textScaleFactor: MediaQuery.of(context).textScaleFactor,),
+                                  //   );
+                                  // }),
                             ),
                           ),
                         ),
@@ -274,8 +278,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           child: Container(
                             // height: 55,
                             child: DropdownSearch<String>(
-                              dropdownDecoratorProps: DropDownDecoratorProps(
-                                dropdownSearchDecoration: InputDecoration(
+                              decoratorProps: DropDownDecoratorProps(
+                                decoration: InputDecoration(
                                   labelText: "Select Financial Year",
                                   //hintText: "Select Duration",
                                   enabledBorder: OutlineInputBorder(
@@ -284,7 +288,7 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                                   // labelStyle: TextStyle( fontSize: 20),
                                 ),
                               ),
-                              items: postModel.financialYearDataList,
+                              items: (filter, infiniteScrollProps)=> postModel.financialYearDataList,
                               selectedItem: '--Select--',
                               onChanged: (String? _opdClaim) async {
                                 postModel.fin_year = _opdClaim!;
@@ -1840,7 +1844,7 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                     child: TextFormField(
                       focusNode: postModel.focusNode,
                       minLines: 1,
-                      maxLines: null,
+                      maxLines: 4,
                       autocorrect: false,
                       // keyboardType: TextInputType.multiline,
                       controller: postModel.billNoController,
@@ -1879,14 +1883,28 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
+            child: BottomSheetWidget(
+              content: "--Select Chronical/Normal--",
+              heading: "Chronical/Normal",
+              claimtype: postModel.chronicaldata,
+              onpressed: (val) {
+                postModel.chronical = val;
+                postModel.billDate = '--Select Date--';
+                postModel.prescriptionDate ='--Select Date--';
+                setState(() {});
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
                 Expanded(
                     child: Text(
-                  'Bill Date',
+                      'Bill Date',
 
-                  style: textStyle14Bold,
-                )),
+                      style: textStyle14Bold,
+                    )),
                 Expanded(
                   child: Container(
                     height: 40,
@@ -1915,28 +1933,28 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           postModel.billDate = await admissionDate(context);
 
                           DateTime fromA =
-                              DateFormat("dd/MM/yyyy").parse(fromApril);
+                          DateFormat("dd/MM/yyyy").parse(fromApril);
                           DateTime fromS =
-                              DateFormat("dd/MM/yyyy").parse(toSeptember);
+                          DateFormat("dd/MM/yyyy").parse(toSeptember);
                           DateTime fromO =
-                              DateFormat("dd/MM/yyyy").parse(fromOct);
+                          DateFormat("dd/MM/yyyy").parse(fromOct);
                           DateTime fromM =
-                              DateFormat("dd/MM/yyyy").parse(fromMarch);
+                          DateFormat("dd/MM/yyyy").parse(fromMarch);
                           DateTime toDecember =
-                              DateFormat("dd/MM/yyyy").parse(toDecemberM);
+                          DateFormat("dd/MM/yyyy").parse(toDecemberM);
                           DateTime toJuneM =
-                              DateFormat("dd/MM/yyyy").parse(toJune);
+                          DateFormat("dd/MM/yyyy").parse(toJune);
 
                           if (postModel.prescriptionDate != '--Select Date--') {
                             DialogUtils.showCustomDialog(context,
                                 title: "PRMS",
                                 description:
-                                    'Prescription date cannot be greater than bill date',
+                                'Prescription date cannot be greater than bill date',
                                 onpositivePressed: () {
-                              Navigator.pop(context);
-                              postModel.prescriptionDate = '--Select Date--';
-                              postModel.notifyListeners();
-                            });
+                                  Navigator.pop(context);
+                                  postModel.prescriptionDate = '--Select Date--';
+                                  postModel.notifyListeners();
+                                });
                           }
 
                           ///Financial year check
@@ -1944,18 +1962,18 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                             DateTime d = DateFormat("dd/MM/yyyy")
                                 .parse(postModel.billDate);
                             DateTime fromFinancialYear =
-                                DateFormat("dd/MM/yyyy").parse(fromApril);
+                            DateFormat("dd/MM/yyyy").parse(fromApril);
                             DateTime toFinancialYear =
-                                DateFormat("dd/MM/yyyy").parse(fromMarch);
+                            DateFormat("dd/MM/yyyy").parse(fromMarch);
                             //&& d.isAfter(fromO) && d.isBefore(fromM)
                             if ((d.isAfter(fromFinancialYear) ||
-                                    d.isAtSameMomentAs(fromFinancialYear)) &&
+                                d.isAtSameMomentAs(fromFinancialYear)) &&
                                 (d.isBefore(toFinancialYear) ||
                                     d.isAtSameMomentAs(toFinancialYear))) {
                               if ((d.isBefore(fromS) ||
                                   d.isAtSameMomentAs(fromS))) {
                                 if ((d.isAfter(fromA) ||
-                                        d.isAtSameMomentAs(fromS)) &&
+                                    d.isAtSameMomentAs(fromS)) &&
                                     (d.isBefore(fromS) ||
                                         d.isAtSameMomentAs(fromS)) &&
                                     (DateTime.now().isBefore(toDecember) ||
@@ -1967,7 +1985,7 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                                 }
                               } else {
                                 if ((d.isAfter(fromO) ||
-                                        d.isAtSameMomentAs(fromO)) &&
+                                    d.isAtSameMomentAs(fromO)) &&
                                     (d.isBefore(fromM) ||
                                         d.isAtSameMomentAs(fromM)) &&
                                     (DateTime.now().isBefore(toJuneM) ||
@@ -1998,13 +2016,13 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                               DialogUtils.showCustomDialog(context,
                                   title: "PRMS",
                                   description:
-                                      'Bill Date does not lie within the financial year',
+                                  'Bill Date does not lie within the financial year',
                                   onpositivePressed: () {
-                                Navigator.pop(context);
-                                postModel.billDate = "--Select Date--";
-                                postModel.attachFile = false;
-                                postModel.notifyListeners();
-                              });
+                                    Navigator.pop(context);
+                                    postModel.billDate = "--Select Date--";
+                                    postModel.attachFile = false;
+                                    postModel.notifyListeners();
+                                  });
                             }
                           }
                           setState(() {});
@@ -2014,7 +2032,7 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text("${postModel.billDate}",
-            ),
+                              ),
                             ))),
                   ),
                 ),
@@ -2030,7 +2048,7 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                         onTap: () {},
                         child: Text(
                           'Prescription Date',
-        
+
                           style: textStyle14Bold,
                         ))),
                 Expanded(
@@ -2056,60 +2074,111 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           String fromMarch = "31/03/${suffix}";
 
                           postModel.prescriptionDate =
-                              await _selectPrescriptionDate(context);
+                          await _selectPrescriptionDate(context, DateFormat('d/M/y').parse(postModel.billDate));
 
-                          ///Financial year check
-                          if (postModel.prescriptionDate != '--Select Date--' &&
-                              postModel.billDate != '--Select Date--') {
-                            var dateTime1 =
-                                DateFormat('d/M/y').parse(postModel.billDate);
-                            var dateTime2 = DateFormat('d/M/y')
-                                .parse(postModel.prescriptionDate);
-                            DateTime d = DateFormat("dd/MM/yyyy")
-                                .parse(postModel.prescriptionDate);
-                            DateTime fromFinancialYear =
-                                DateFormat("dd/MM/yyyy").parse(fromApril);
-                            DateTime toFinancialYear =
-                                DateFormat("dd/MM/yyyy").parse(fromMarch);
-                            if ((d.isAfter(fromFinancialYear) ||
-                                    d.isAtSameMomentAs(fromFinancialYear)) &&
-                                (d.isBefore(toFinancialYear) ||
-                                    d.isAtSameMomentAs(toFinancialYear))) {
-                              if (dateTime2.isAfter(dateTime1)) {
+                          var chronical_non = postModel.chronical;
+                          print("chronical non chronical :: $chronical_non");
+
+                          var dateTime1 =
+                          DateFormat('d/M/y').parse(postModel.billDate);
+                          var dateTime2 = DateFormat('d/M/y')
+                              .parse(postModel.prescriptionDate);
+                          DateTime dOneMonth = DateTime(dateTime2.year, dateTime2.month + 1, dateTime2.day);
+
+                          DateTime dSixMonth = DateTime(dateTime2.year, dateTime2.month + 6, dateTime2.day);
+                          print(" DATE FROM :: $dSixMonth" );
+                          if(chronical_non == "Normal"){
+                            if (postModel.prescriptionDate != '--Select Date--' &&
+                                postModel.billDate != '--Select Date--') {
+                                         if(dOneMonth.isBefore(dateTime1) || dOneMonth.isAtSameMomentAs(dateTime1)){
+                                  DialogUtils.showCustomDialog(context,
+                                                title: "PRMS",
+                                                description:
+                                                'Prescription date cannot be greater than One Month to bill date',
+                                                onpositivePressed: () {
+                                                  Navigator.pop(context);
+                                                  postModel.prescriptionDate = "--Select Date--";
+                                                  // postModel.attachFile = false;
+                                                  postModel.notifyListeners();
+                                                });
+                                }else{
+
+                                }
+
+                            }
+                          }else{
+                            if (postModel.prescriptionDate != '--Select Date--' &&
+                                postModel.billDate != '--Select Date--') {
+                              if(dSixMonth.isBefore(dateTime1) || dSixMonth.isAtSameMomentAs(dateTime1)){
                                 DialogUtils.showCustomDialog(context,
                                     title: "PRMS",
                                     description:
-                                        'Prescription date cannot be greater than bill date',
+                                    'Prescription date cannot be greater than Six Month to bill date',
                                     onpositivePressed: () {
-                                  Navigator.pop(context);
-                                  postModel.prescriptionDate = "--Select Date--";
-                                  // postModel.attachFile = false;
-                                  postModel.notifyListeners();
-                                });
+                                      Navigator.pop(context);
+                                      postModel.prescriptionDate = "--Select Date--";
+                                      // postModel.attachFile = false;
+                                      postModel.notifyListeners();
+                                    });
+                              }else{
+
                               }
-                            } else {
-                              DialogUtils.showCustomDialog(context,
-                                  title: "PRMS",
-                                  description:
-                                      'Prescription Date does not lie within the financial year',
-                                  onpositivePressed: () {
-                                Navigator.pop(context);
-                                postModel.prescriptionDate = "--Select Date--";
-                                // postModel.attachFile = false;
-                                postModel.notifyListeners();
-                              });
+
                             }
-                          } else {
-                            DialogUtils.showCustomDialog(context,
-                                title: "PRMS",
-                                description: 'Bill Date cannot be empty',
-                                onpositivePressed: () {
-                              Navigator.pop(context);
-                              postModel.prescriptionDate = "--Select Date--";
-                              // postModel.attachFile = false;
-                              postModel.notifyListeners();
-                            });
                           }
+
+                          ///Financial year check
+                          // if (postModel.prescriptionDate != '--Select Date--' &&
+                          //     postModel.billDate != '--Select Date--') {
+                          //   var dateTime1 =
+                          //   DateFormat('d/M/y').parse(postModel.billDate);
+                          //   var dateTime2 = DateFormat('d/M/y')
+                          //       .parse(postModel.prescriptionDate);
+                          //   DateTime d = DateFormat("dd/MM/yyyy")
+                          //       .parse(postModel.prescriptionDate);
+                          //   DateTime fromFinancialYear =
+                          //   DateFormat("dd/MM/yyyy").parse(fromApril);
+                          //   DateTime toFinancialYear =
+                          //   DateFormat("dd/MM/yyyy").parse(fromMarch);
+                          //   if ((d.isAfter(fromFinancialYear) ||
+                          //       d.isAtSameMomentAs(fromFinancialYear)) &&
+                          //       (d.isBefore(toFinancialYear) ||
+                          //           d.isAtSameMomentAs(toFinancialYear))) {
+                          //     if (dateTime2.isAfter(dateTime1)) {
+                          //       DialogUtils.showCustomDialog(context,
+                          //           title: "PRMS",
+                          //           description:
+                          //           'Prescription date cannot be greater than bill date',
+                          //           onpositivePressed: () {
+                          //             Navigator.pop(context);
+                          //             postModel.prescriptionDate = "--Select Date--";
+                          //             // postModel.attachFile = false;
+                          //             postModel.notifyListeners();
+                          //           });
+                          //     }
+                          //   } else {
+                          //     DialogUtils.showCustomDialog(context,
+                          //         title: "PRMS",
+                          //         description:
+                          //         'Prescription Date does not lie within the financial year',
+                          //         onpositivePressed: () {
+                          //           Navigator.pop(context);
+                          //           postModel.prescriptionDate = "--Select Date--";
+                          //           // postModel.attachFile = false;
+                          //           postModel.notifyListeners();
+                          //         });
+                          //   }
+                          // } else {
+                          //   DialogUtils.showCustomDialog(context,
+                          //       title: "PRMS",
+                          //       description: 'Bill Date cannot be empty',
+                          //       onpositivePressed: () {
+                          //         Navigator.pop(context);
+                          //         postModel.prescriptionDate = "--Select Date--";
+                          //         // postModel.attachFile = false;
+                          //         postModel.notifyListeners();
+                          //       });
+                          // }
 
                           setState(() {});
                         },
@@ -2118,7 +2187,7 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text("${postModel.prescriptionDate}",
-            ),
+                              ),
                             ))),
                     // TextField(
                     //   decoration: InputDecoration(
@@ -2133,24 +2202,11 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: BottomSheetWidget(
-              content: "--Select Chronical/Normal--",
-              heading: "Chronical/Normal",
-              claimtype: postModel.chronicaldata,
-              onpressed: (val) {
-                postModel.chronical = val;
-                setState(() {});
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
                 Expanded(
                     child: Text(
                   'Amount Claimed',
-
                   style: textStyle14Bold,
                 )),
                 Expanded(
@@ -2159,8 +2215,10 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                     child: TextFormField(
                       focusNode: postModel.focusNodeamount,
                       minLines: 1,
+                      maxLength: 9,
                       autocorrect: false,
                       keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
                       controller: postModel.amountController,
                       toolbarOptions: const ToolbarOptions(
                         copy: false,
@@ -3566,12 +3624,12 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
     return "${discharge.day}/${discharge.month}/${discharge.year}".toString();
   }
 
-  _selectPrescriptionDate(BuildContext context) async {
+  _selectPrescriptionDate(BuildContext context,DateTime lastdate) async {
     final DateTime? selected = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: lastdate,
       firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
+      lastDate: lastdate,
     );
     if (selected != null && selected != selectedDate3)
       setState(() {

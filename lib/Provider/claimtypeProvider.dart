@@ -7,10 +7,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:prms/Model/claim_type_model.dart';
-import 'package:prms/Model/other_claim_model.dart';
-import 'package:prms/Model/system_of_medicine_model.dart';
-import 'package:prms/Rest/api_services.dart';
+import '../Model/claim_type_model.dart';
+import '../Model/other_claim_model.dart';
+import '../Model/system_of_medicine_model.dart';
+import '../Rest/api_services.dart';
  
 
 import '../Widget/alert_dialog.dart';

@@ -16,13 +16,15 @@ class ViewImage extends StatelessWidget {
         appBar: CustomAppBar(title: "",),
         body:   Column(
             children: [
-              type=="PDF" || type=="pdf"?Expanded(
+              type=="PDF" || type=="pdf" ? Expanded(
                 child: PDF().fromUrl(
                   imageUrl,
                   placeholder: (progress) => Center(child: Text('$progress %')),
                   errorWidget: (error) => Center(child: Text(error.toString())),
                 ),
-              ) :Expanded(child: Image.network(imageUrl))
+              ) :Expanded(
+                  child: Center(child: Image.network(imageUrl))
+              )
             ],
         )
     );

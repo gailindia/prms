@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:prms/Model/claim_status_model.dart';
-import 'package:prms/Widget/customAppBar.dart'; 
+import '/Model/claim_status_model.dart';
+import '/Widget/customAppBar.dart';
 
 class ClaimStatusDetailsScreen extends StatefulWidget {
   final ClaimStatusModel? todo;

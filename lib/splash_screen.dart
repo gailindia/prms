@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:prms/Auth/login_screen.dart';
-import 'package:prms/Screens/home_screen.dart';
+import '../Auth/login_screen.dart';
+import '../Screens/home_screen.dart';
 // import 'package:flutter_jailbreak_detection/flutter_jailbreak_detection.dart';
  
-import 'package:root_checker_plus/root_checker_plus.dart';
+// import 'package:root_checker_plus/root_checker_plus.dart';
 // import 'package:root_checker_plus/root_checker_plus.dart';
 import 'package:secure_shared_preferences/secure_shared_preferences.dart';
 
@@ -31,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // TODO: implement initState
     super.initState();
     // isCheckJailbreak();
-    isCheckRooted();
+    // isCheckRooted();
     if(Platform.isAndroid){
       if(_rooted == null){
 
@@ -82,8 +82,6 @@ class _SplashScreenState extends State<SplashScreen> {
       //   empno = await sharedPreferences.getString('EMP_NO') ?? "";
       // }
 
-
-    
       if (empno == null || empno == "") {
         // ignore: use_build_context_synchronously
         Navigator.pushReplacement(context,
@@ -96,23 +94,23 @@ class _SplashScreenState extends State<SplashScreen> {
     }catch(e){
     }
   }
-  Future<void> isCheckRooted() async{
-    bool _checkRooted;
-    bool developerMode;
-    try{
-      _checkRooted = (await RootCheckerPlus.isRootChecker())! ;
-      developerMode = (await RootCheckerPlus.isDeveloperMode())! ;
-      print("Android :: $_checkRooted $developerMode");
-    } on PlatformException {
-      _checkRooted = true;
-      developerMode = true;
-    }
-    if(!mounted) return;
-    setState(() {
-      _rooted = _checkRooted;
-      _eveloperMode = developerMode;
-    });
-  }
+  // Future<void> isCheckRooted() async{
+  //   bool _checkRooted;
+  //   bool developerMode;
+  //   try{
+  //     _checkRooted = (await RootCheckerPlus.isRootChecker())! ;
+  //     developerMode = (await RootCheckerPlus.isDeveloperMode())! ;
+  //     print("Android :: $_checkRooted $developerMode");
+  //   } on PlatformException {
+  //     _checkRooted = true;
+  //     developerMode = true;
+  //   }
+  //   if(!mounted) return;
+  //   setState(() {
+  //     _rooted = _checkRooted;
+  //     _eveloperMode = developerMode;
+  //   });
+  // }
 
   // Future<void> isCheckJailbreak() async {
   //

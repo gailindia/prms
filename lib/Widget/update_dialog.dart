@@ -1,12 +1,15 @@
 // Created by AMIT JANGID on 06/07/20.
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:prms/Widget/primary_button.dart';
+// import 'package:get/get.dart';
 // import 'package:url_launcher/url_launcher.dart';
-import 'package:multiutillib/utils/constants.dart';
-import 'package:multiutillib/animations/animations.dart';
-import 'package:multiutillib/widgets/default_button.dart';
-
+// import 'package:multiutillib/utils/constants.dart';
+// import 'package:multiutillib/animations/animations.dart';
+// import 'package:multiutillib/widgets/default_button.dart';
+///TODO check animation
+///   transitionBuilder: (context, animation, secondaryAnimation, child) =>
+//         Animations.grow(animation, child),
 /// This method will show a dialog box with custom UI and animation
 updateAppDialog({required BuildContext context, required String storeLink}) {
   return showGeneralDialog(
@@ -15,8 +18,7 @@ updateAppDialog({required BuildContext context, required String storeLink}) {
     barrierDismissible: false,
     barrierColor: Colors.black.withOpacity(0.4),
     transitionDuration: const Duration(milliseconds: 400),
-    transitionBuilder: (context, animation, secondaryAnimation, child) =>
-        Animations.grow(animation, child),
+
     pageBuilder: (BuildContext context, animation, secondaryAnimation) =>
         _CustomDialog(storeLink: storeLink),
   );
@@ -92,7 +94,7 @@ class _CustomDialog extends StatelessWidget {
               child: Row(
                 children: [
                   Expanded(
-                    child: DefaultButton(
+                    child: PrimaryButton(
                       text: 'Cancel',
                       btnColor: Colors.amberAccent,
                       onPressed: (){
@@ -113,8 +115,8 @@ class _CustomDialog extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: DefaultButton(
-                      text: kOK,
+                    child: PrimaryButton(
+                      text: 'Ok',
                       btnColor: Colors.amberAccent,
                       btnTextStyle: TextStyle(
                         fontSize: 15,

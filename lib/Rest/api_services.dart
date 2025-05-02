@@ -6,17 +6,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:prms/Auth/login_screen.dart';
-import 'package:prms/Model/claim_status_details.dart';
-import 'package:prms/Model/claim_status_model.dart';
-import 'package:prms/Model/claim_type_model.dart';
-import 'package:prms/Model/other_claim_model.dart';
-import 'package:prms/Model/req_details_model.dart';
-import 'package:prms/Model/system_of_medicine_model.dart';
-import 'package:prms/Rest/services.dart';
-import 'package:prms/Screens/home_screen.dart';
-import 'package:prms/Widget/alert_dialog.dart';
-import 'package:prms/Widget/loading_dialog.dart'; 
+import '../Auth/login_screen.dart';
+import '../Model/claim_status_details.dart';
+import '../Model/claim_status_model.dart';
+import '../Model/claim_type_model.dart';
+import '../Model/other_claim_model.dart';
+import '../Model/req_details_model.dart';
+import '../Model/system_of_medicine_model.dart';
+import '../Rest/services.dart';
+import '../Screens/home_screen.dart';
+import '../Widget/alert_dialog.dart';
+import '../Widget/loading_dialog.dart';
 import 'package:secure_shared_preferences/secure_shared_preferences.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 
@@ -539,6 +539,7 @@ class ApiService extends Services{
       http.Response response = await http.post(Uri.parse(apiurl),body: _body,headers: header,);
       print("response :: ${response.statusCode}");
       if (response.statusCode == 200) {
+        print("response2 :: ${response.statusCode}");
         LoadingDialog.hide(context);
         // var getData;
         // if(response.body.isNotEmpty) {
@@ -641,7 +642,8 @@ class ApiService extends Services{
       String? vendorcode = (await preferences.getString('VENDOR_CODE',isEncrypted: true));
       String? empno = (await preferences.getString('EMP_NO'));
       Map<String,String> header = {
-        'Authorization': 'Bearer $token'
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
       };
 
         var data = json.encode({
@@ -693,10 +695,13 @@ class ApiService extends Services{
         // );
 
       // print("data :: $response");
+      var url = Uri.parse("$kBaseUrl$kGetUpdateDraftData");
+      // Uri.parse("$kBaseUrl$kGetUpdateDraftData")
+      print("utl :: $url");
+      http.Response response = await http.post(
+          url, body: data, headers: header);
 
-      var response = await http.post(
-          Uri.parse("$kBaseUrl$kGetUpdateDraftData"), body: data, headers: header);
-
+      print("utl :: ${{response.body}}");
         if (response.statusCode == 200) {
           LoadingDialog.hide(context);
 

@@ -3,10 +3,10 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:prms/Auth/otp_screen.dart';
-import 'package:prms/Rest/api_services.dart';
-import 'package:prms/Screens/home_screen.dart';
-import 'package:prms/Widget/loading_dialog.dart';
+import '../Auth/otp_screen.dart';
+import '../Rest/api_services.dart';
+import '../Screens/home_screen.dart';
+import '../Widget/loading_dialog.dart';
  
 
 import '../Widget/alert_dialog.dart';

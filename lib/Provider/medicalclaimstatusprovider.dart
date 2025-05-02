@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:prms/Model/claim_status_details.dart';
-import 'package:prms/Model/claim_status_model.dart';
-import 'package:prms/Model/req_details_model.dart';
-import 'package:prms/Rest/api_services.dart';
+import '../Model/claim_status_details.dart';
+import '../Model/claim_status_model.dart';
+import '../Model/req_details_model.dart';
+import '../Rest/api_services.dart';
  
 // import 'package:sn_progress_dialog/progress_dialog.dart';
 

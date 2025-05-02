@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
-import 'package:prms/Provider/loginProvider.dart'; 
+import '/Provider/loginProvider.dart';
 import 'package:provider/provider.dart';
 
 

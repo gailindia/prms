@@ -4,12 +4,12 @@ import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
-import 'package:freerasp/freerasp.dart';
-import 'package:prms/Provider/claimtypeProvider.dart';
-import 'package:prms/Provider/homeprovider.dart';
-import 'package:prms/Provider/loginProvider.dart';
-import 'package:prms/Provider/medicalclaimstatusprovider.dart';
-import 'package:prms/splash_screen.dart';
+// import 'package:freerasp/freerasp.dart';
+import '../Provider/claimtypeProvider.dart';
+import '../Provider/homeprovider.dart';
+import '../Provider/loginProvider.dart';
+import '../Provider/medicalclaimstatusprovider.dart';
+import '../splash_screen.dart';
 
  
 
@@ -43,29 +43,29 @@ void main() {
 }
 
 /// Initialize Talsec configuration for Android and iOS
-Future<void> _initializeTalsec(String base64Hash) async {
-  final config = TalsecConfig(
-    androidConfig: AndroidConfig(
-      packageName: 'com.gail.gailprms',
-      signingCertHashes: [base64Hash],
-      supportedStores: ['com.sec.android.app.samsungapps'],
-      malwareConfig: MalwareConfig(
-        blacklistedPackageNames: ['com.gail.gailprms'],
-        suspiciousPermissions: [
-          ['android.permission.READ_SMS', 'android.permission.READ_CONTACTS'],
-        ],
-      ),
-    ),
-    iosConfig: IOSConfig(
-      bundleIds: ['com.gail.PRMS'],
-      teamId: 'YF4NDNJ4TE',
-    ),
-    watcherMail: 'surbhi.1.jain@coforge.com',
-    isProd: true,
-  );
-
-  await Talsec.instance.start(config);
-}
+// Future<void> _initializeTalsec(String base64Hash) async {
+//   final config = TalsecConfig(
+//     androidConfig: AndroidConfig(
+//       packageName: 'com.gail.gailprms',
+//       signingCertHashes: [base64Hash],
+//       supportedStores: ['com.sec.android.app.samsungapps'],
+//       malwareConfig: MalwareConfig(
+//         blacklistedPackageNames: ['com.gail.gailprms'],
+//         suspiciousPermissions: [
+//           ['android.permission.READ_SMS', 'android.permission.READ_CONTACTS'],
+//         ],
+//       ),
+//     ),
+//     iosConfig: IOSConfig(
+//       bundleIds: ['com.gail.PRMS'],
+//       teamId: 'YF4NDNJ4TE',
+//     ),
+//     watcherMail: 'surbhi.1.jain@coforge.com',
+//     isProd: true,
+//   );
+//
+//   await Talsec.instance.start(config);
+// }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

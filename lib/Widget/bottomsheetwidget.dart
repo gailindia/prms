@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:prms/Model/claim_type_model.dart';
-import 'package:prms/Model/other_claim_model.dart';
-import 'package:prms/Model/system_of_medicine_model.dart';
-import 'package:prms/styles/text_style.dart';
+import '../Model/claim_type_model.dart';
+import '../Model/other_claim_model.dart';
+import '../Model/system_of_medicine_model.dart';
+import '../styles/text_style.dart';
  
 
 

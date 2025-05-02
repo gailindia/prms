@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:prms/Model/system_of_medicine_model.dart';
-import 'package:prms/styles/text_style.dart';
+import '../Model/system_of_medicine_model.dart';
+import '../styles/text_style.dart';
 
  
 
