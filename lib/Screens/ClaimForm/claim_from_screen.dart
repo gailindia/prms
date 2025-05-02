@@ -149,8 +149,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           child: Container(
                             // height: 55,
                             child: DropdownSearch<String>(
-                              dropdownDecoratorProps: DropDownDecoratorProps(
-                                dropdownSearchDecoration: InputDecoration(
+                              decoratorProps: DropDownDecoratorProps(
+                                decoration: InputDecoration(
                                   labelText: "Select Claim Type",
                                   //hintText: "Select Duration",
                                   enabledBorder: OutlineInputBorder(
@@ -159,7 +159,7 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                                   // labelStyle: TextStyle( fontSize: 20),
                                 ),
                               ),
-                              items: claimtype,
+                              items:(filter, infiniteScrollProps)=> claimtype,
                               onChanged: (String? _opdClaim) async {
                                 homeModel.fin_year = '';
                                 SecureSharedPref preferences =
@@ -221,13 +221,17 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                               value == null || value == "--Select--"
                                   ? 'field required'
                                   : null,
-                              popupProps: PopupProps.menu(
-                                  itemBuilder: (context, item, isSelected) {
-                                    return Container(
-                                      padding: const EdgeInsets.all(8),
-                                      child: Text(item,textScaleFactor: MediaQuery.of(context).textScaleFactor,),
-                                    );
-                                  }),
+                              // popupProps: PopupProps.menu(
+                              //   showSelectedItems: true,
+                              //   fit: FlexFit.loose,
+                              //   constraints: BoxConstraints(maxHeight: 200),
+                              // ),
+                                  // itemBuilder: (context, item, isSelected,isSelected) {
+                                  //   return Container(
+                                  //     padding: const EdgeInsets.all(8),
+                                  //     child: Text(item,textScaleFactor: MediaQuery.of(context).textScaleFactor,),
+                                  //   );
+                                  // }),
                             ),
                           ),
                         ),
@@ -274,8 +278,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           child: Container(
                             // height: 55,
                             child: DropdownSearch<String>(
-                              dropdownDecoratorProps: DropDownDecoratorProps(
-                                dropdownSearchDecoration: InputDecoration(
+                              decoratorProps: DropDownDecoratorProps(
+                                decoration: InputDecoration(
                                   labelText: "Select Financial Year",
                                   //hintText: "Select Duration",
                                   enabledBorder: OutlineInputBorder(
@@ -284,7 +288,7 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                                   // labelStyle: TextStyle( fontSize: 20),
                                 ),
                               ),
-                              items: postModel.financialYearDataList,
+                              items: (filter, infiniteScrollProps)=> postModel.financialYearDataList,
                               selectedItem: '--Select--',
                               onChanged: (String? _opdClaim) async {
                                 postModel.fin_year = _opdClaim!;

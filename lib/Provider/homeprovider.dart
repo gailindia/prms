@@ -3,7 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:multiutillib/utils/utils.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+// import 'package:multiutillib/utils/utils.dart';
 import '../Auth/login_screen.dart';
 import '../Model/claim_draft_model.dart';
 import '../Rest/api_services.dart';
@@ -112,9 +113,10 @@ class HomeProvider extends ChangeNotifier{
     late String _storeLink, _serverAppVersion;
 
 
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
     // calling get app version method
-    currentAppVersion = await getAppVersion();
+    currentAppVersion =packageInfo.version;
     // update([kAppVersion]);
 
     if (Platform.isAndroid) {

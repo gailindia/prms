@@ -5,7 +5,7 @@ import '../Auth/login_screen.dart';
 import '../Screens/home_screen.dart';
 // import 'package:flutter_jailbreak_detection/flutter_jailbreak_detection.dart';
  
-import 'package:root_checker_plus/root_checker_plus.dart';
+// import 'package:root_checker_plus/root_checker_plus.dart';
 // import 'package:root_checker_plus/root_checker_plus.dart';
 import 'package:secure_shared_preferences/secure_shared_preferences.dart';
 
@@ -94,23 +94,23 @@ class _SplashScreenState extends State<SplashScreen> {
     }catch(e){
     }
   }
-  Future<void> isCheckRooted() async{
-    bool _checkRooted;
-    bool developerMode;
-    try{
-      _checkRooted = (await RootCheckerPlus.isRootChecker())! ;
-      developerMode = (await RootCheckerPlus.isDeveloperMode())! ;
-      print("Android :: $_checkRooted $developerMode");
-    } on PlatformException {
-      _checkRooted = true;
-      developerMode = true;
-    }
-    if(!mounted) return;
-    setState(() {
-      _rooted = _checkRooted;
-      _eveloperMode = developerMode;
-    });
-  }
+  // Future<void> isCheckRooted() async{
+  //   bool _checkRooted;
+  //   bool developerMode;
+  //   try{
+  //     _checkRooted = (await RootCheckerPlus.isRootChecker())! ;
+  //     developerMode = (await RootCheckerPlus.isDeveloperMode())! ;
+  //     print("Android :: $_checkRooted $developerMode");
+  //   } on PlatformException {
+  //     _checkRooted = true;
+  //     developerMode = true;
+  //   }
+  //   if(!mounted) return;
+  //   setState(() {
+  //     _rooted = _checkRooted;
+  //     _eveloperMode = developerMode;
+  //   });
+  // }
 
   // Future<void> isCheckJailbreak() async {
   //
