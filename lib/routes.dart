@@ -1,5 +1,7 @@
 const String kBaseUrl =
     'https://gailebank.gail.co.in/GAIL_APIs/api/PRMS/';
+// const String kBaseUrldev =
+//     'https://gailebank.gail.co.in/GAIL_APIs_Dev/api/PRMS/';
 const String kIsLoginApi = "PRMS_Login_dbd";
 // const String kIsLoginApi = "PRMS_Login_aud";
 const String kIsVersionApi = "Version_dbd";
@@ -43,5 +45,6 @@ const String kGetReqDetails="PRMS_CLAIM_REQUESTNO_DETAILS_dbd";
 const String kGetFinancialYear="finYear_Ent";
 // const String kGetFinancialYear="finYear_Ent_aud";
 const String KGetdataDetailOnDD="dataDetailOnDD?";
+// const String KGetdataDetailOnDD="dataDetailOnDD_aud?";
 
 

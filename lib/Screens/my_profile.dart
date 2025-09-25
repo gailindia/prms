@@ -52,7 +52,7 @@ class _MyProfileState extends State<MyProfile> {
                     // const Spacer(),
                     Expanded(
                         flex: 4,
-                        child: Text(name.toString(),style: TextStyle(fontWeight: FontWeight.w400,),)),
+                        child: Text(name ?? "NA",style: TextStyle(fontWeight: FontWeight.w400,),)),
                   ],
                 ),
                 const SizedBox(
@@ -71,7 +71,7 @@ class _MyProfileState extends State<MyProfile> {
                     // const Spacer(),
                     Expanded(
                         flex: 4,
-                        child: Text(cpf.toString(),style: TextStyle(fontWeight: FontWeight.w400))),
+                        child: Text(cpf ?? "NA",style: TextStyle(fontWeight: FontWeight.w400))),
                   ],
                 ),
                 const SizedBox(
@@ -92,7 +92,7 @@ class _MyProfileState extends State<MyProfile> {
                     // const Spacer(),
                     Expanded(
                         flex: 4,
-                        child: Text(location.toString(),style: TextStyle(fontWeight: FontWeight.w400))),
+                        child: Text(location ?? "NA",style: TextStyle(fontWeight: FontWeight.w400))),
                   ],
                 ),
                 const SizedBox(
@@ -112,7 +112,7 @@ class _MyProfileState extends State<MyProfile> {
                     // const Spacer(),
                     Expanded(
                         flex: 4,
-                        child: Text(vendorcode.toString(),style: TextStyle(fontWeight: FontWeight.w400))),
+                        child: Text(vendorcode ?? "NA",style: TextStyle(fontWeight: FontWeight.w400))),
                   ],
                 ),
                 // const SizedBox(

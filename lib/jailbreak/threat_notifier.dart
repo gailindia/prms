@@ -1,7 +1,6 @@
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:freerasp/freerasp.dart';
 // import '/jailbreak/threat_state.dart';
-//
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
 // /// Class responsible for setting up listeners to detected threats
 // class ThreatNotifier extends AutoDisposeNotifier<ThreatState> {
 //   @override
@@ -28,6 +27,9 @@
 //       onSystemVPN: () => _updateThreat(Threat.systemVPN),
 //       onDevMode: () => _updateThreat(Threat.devMode),
 //       onADBEnabled: () => _updateThreat(Threat.adbEnabled),
+//       onScreenshot: () => _updateThreat(Threat.screenshot),
+//       onScreenRecording: () => _updateThreat(Threat.screenRecording),
+//       onMultiInstance: () => _updateThreat(Threat.multiInstance),
 //     );
 //
 //     Talsec.instance.attachListener(threatCallback);

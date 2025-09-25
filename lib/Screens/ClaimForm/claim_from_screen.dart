@@ -1,5 +1,3 @@
-
-
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +12,7 @@ import '/Widget/customAppBar.dart';
 import '/Widget/patientBottomSheet.dart';
 import '/Widget/systemmedicinewidget.dart';
 import '/styles/text_style.dart';
- 
+
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:secure_shared_preferences/secure_shared_pref.dart';
@@ -105,14 +103,14 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
     homeProvider.fin_year = '';
 
     // claimTypeProvider.requestPermission();
-    claimTypeProvider.getPatientNameData();
-    claimTypeProvider.getSystemMedicineData();
-    claimTypeProvider.getChronicalData();
-    claimTypeProvider.getkGetOtherClaim();
-    claimTypeProvider.getTreatmenttypeData();
-    claimTypeProvider.getDomiciliaryData();
-    claimTypeProvider.getCriticalIllnessData();
-    claimTypeProvider.getFinancialYear();
+    claimTypeProvider.getPatientNameData(context);
+    claimTypeProvider.getSystemMedicineData(context);
+    claimTypeProvider.getChronicalData(context);
+    claimTypeProvider.getkGetOtherClaim(context);
+    claimTypeProvider.getTreatmenttypeData(context);
+    claimTypeProvider.getDomiciliaryData(context);
+    claimTypeProvider.getCriticalIllnessData(context);
+    claimTypeProvider.getFinancialYear(context);
   }
 
   @override
@@ -123,55 +121,61 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
     final scale = mediaQueryData.textScaleFactor;
 
     return MediaQuery(
-        data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
-        child: Scaffold(
-          appBar: CustomAppBar(
-            title: 'PRMS Claim',
-          ),
-          body: GestureDetector(
-            onTap: () {
-              FocusScope.of(context).requestFocus(FocusNode());
-            },
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                            child: Text(
-                              'Claim Type',
-            
-                              style: textStyle14Bold,
-                            )),
-                        Expanded(
-                          child: Container(
-                            // height: 55,
-                            child: DropdownSearch<String>(
-                              decoratorProps: DropDownDecoratorProps(
-                                decoration: InputDecoration(
-                                  labelText: "Select Claim Type",
-                                  //hintText: "Select Duration",
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12.0),
-                                  ),
-                                  // labelStyle: TextStyle( fontSize: 20),
+      data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
+      child: Scaffold(
+        appBar: CustomAppBar(
+          title: 'PRMS Claim',
+        ),
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: Text(
+                        'Claim Type',
+                        style: textStyle14Bold,
+                      )),
+                      Expanded(
+                        child: Container(
+                          // height: 55,
+                          child: DropdownSearch<String>(
+                            decoratorProps: DropDownDecoratorProps(
+                              decoration: InputDecoration(
+                                labelText: "Select Claim Type",
+                                //hintText: "Select Duration",
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
                                 ),
+                                // labelStyle: TextStyle( fontSize: 20),
                               ),
-                              items:(filter, infiniteScrollProps)=> claimtype,
-                              onChanged: (String? _opdClaim) async {
+                            ),
+                            items: (filter, infiniteScrollProps) => claimtype,
+                            onChanged: (String? _opdClaim) async {
+                              SecureSharedPref sharedPref = await SecureSharedPref
+                                  .getInstance();
+
                                 homeModel.fin_year = '';
                                 SecureSharedPref preferences =
                                 await SecureSharedPref.getInstance();
 
                                 homeModel.isFinancialYear =
-                                    homeModel.claimDataType!.contains(_opdClaim);
+                                    homeModel.claimDataType!.contains(
+                                        _opdClaim);
                                 var filteredClaims =
                                 homeModel.claimDate!.where((element) {
-                                  if (element.containsKey(_opdClaim.toString())) {
-                                    homeModel.fin_year = '${element[_opdClaim]}';
-                                    postModel.getDataDetailOnDD(homeModel.fin_year);
+                                  if (element.containsKey(
+                                      _opdClaim.toString())) {
+                                    homeModel.fin_year =
+                                    '${element[_opdClaim]}';
+                                    postModel
+                                        .getDataDetailOnDD(context,homeModel.fin_year);
                                   } else {}
                                   return true;
                                 }).toList();
@@ -187,21 +191,22 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                                builder: (context) => HomeScreen()));
+                                                builder: (context) =>
+                                                    HomeScreen()));
                                       });
                                 }
 
                                 preferences.putString("claim_type", _opdClaim!);
 
                                 if (_opdClaim == "OPD") {
-                                  postModel.getClaimData(_opdClaim);
+                                  postModel.getClaimData(context,_opdClaim);
                                   setState(() {
                                     opdvisibility = true;
                                     hospitalvisibility = false;
                                     claim = "OPD CLAIM";
                                   });
                                 } else if (_opdClaim == "HOSPITALISATION") {
-                                  postModel.getClaimData('Hospitalisation');
+                                  postModel.getClaimData(context,'Hospitalisation');
                                   setState(() {
                                     opdvisibility = false;
                                     hospitalvisibility = true;
@@ -214,191 +219,187 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                                   });
                                 }
                               },
-                              // =>
-                              //     controller.onOpdClaimTypeSelected(opdClaimType: _opdClaim),
-                              selectedItem: '--Select--',
-                              validator: (value) =>
-                              value == null || value == "--Select--"
-                                  ? 'field required'
-                                  : null,
-                              // popupProps: PopupProps.menu(
-                              //   showSelectedItems: true,
-                              //   fit: FlexFit.loose,
-                              //   constraints: BoxConstraints(maxHeight: 200),
-                              // ),
-                                  // itemBuilder: (context, item, isSelected,isSelected) {
-                                  //   return Container(
-                                  //     padding: const EdgeInsets.all(8),
-                                  //     child: Text(item,textScaleFactor: MediaQuery.of(context).textScaleFactor,),
-                                  //   );
-                                  // }),
-                            ),
+
+                            selectedItem: '--Select--',
+                            validator: (value) =>
+                                value == null || value == "--Select--"
+                                    ? 'field required'
+                                    : null,
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  homeModel.isFinancialYear
-                      ? Visibility(
-                    visible: homeModel.isFinancialYear,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                              child: Text(
-                                'Financial Year',
-              
-                                style: textStyle14Bold,
-                              )),
-                          Expanded(
-                            child: Container(
-                              // height: 55,
-                                child: Text(
-                                  homeModel.fin_year,
-                
-                                  style: textStyle14Bold,
-                                )),
-                          ),
-                        ],
                       ),
-                    ),
-                  )
-                      : Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                            child: Text(
-                              'Financial Year',
-            
-                              style: textStyle14Bold,
-                            )),
-                        Expanded(
-                          child: Container(
-                            // height: 55,
-                            child: DropdownSearch<String>(
-                              decoratorProps: DropDownDecoratorProps(
-                                decoration: InputDecoration(
-                                  labelText: "Select Financial Year",
-                                  //hintText: "Select Duration",
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12.0),
-                                  ),
-                                  // labelStyle: TextStyle( fontSize: 20),
-                                ),
-                              ),
-                              items: (filter, infiniteScrollProps)=> postModel.financialYearDataList,
-                              selectedItem: '--Select--',
-                              onChanged: (String? _opdClaim) async {
-                                postModel.fin_year = _opdClaim!;
-                                homeModel.fin_year = _opdClaim!;
-                                postModel.consultationDate =
-                                "--Select Date--";
-                                postModel.billDate = "--Select Date--";
-                                postModel.admissiondate = "--Select Date--";
-                                postModel.dischargedate = "--Select Date--";
-                                postModel.prescriptionDate =
-                                "--Select Date--";
-                                postModel.notifyListeners();
-                                postModel.getDataDetailOnDD(_opdClaim!);
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    ],
                   ),
-                  Visibility(
-                    visible: claim == 'OPD CLAIM' && homeModel.fin_year != '',
-                    child: Column(
-                      children: [
-                        Text(
-                          'Remaining Entitlement',
-        
-                          style: textStyle14Bold,
-                        ),
-                        Visibility(
-                          visible: postModel.financialYearSelect,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                    child: Text(
-                                      'OPD',
-                    
-                                      style: textStyle14Bold,
-                                    )),
-                                Expanded(
-                                    child: Text(
-                                      '${postModel.opdDetailModel?.opd}',
-                    
-                                      style: textStyle14Bold,
-                                    )),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Visibility(
-                          visible: postModel.financialYearSelect,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                    child: Text(
-                                      'Spectacle',
-                    
-                                      style: textStyle14Bold,
-                                    )),
-                                Expanded(
-                                    child: Text(
-                                      '${postModel.opdDetailModel?.specs} (Block Year: ${postModel.opdDetailModel?.specs_Block_year})',
-                    
-                                      style: textStyle14Bold,
-                                    )),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Container(
-                      // height: 40,
-                      decoration: const BoxDecoration(
-                        color: Color(0xffF6F3F3FF),
-                        borderRadius: BorderRadius.all(Radius.circular(
-                            10.0)), // Set rounded corner radius// Make rounded corner of border
-                      ),
-                      child: Center(
+                ),
+                homeModel.isFinancialYear
+                    ? Visibility(
+                        visible: homeModel.isFinancialYear,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            claim.toString(),
-          
-                            style: textStyle14Bold,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                  child: Text(
+                                'Financial Year',
+                                style: textStyle14Bold,
+                              )),
+                              Expanded(
+                                child: Container(
+                                    // height: 55,
+                                    child: Text(
+                                  homeModel.fin_year,
+                                  style: textStyle14Bold,
+                                )),
+                              ),
+                            ],
                           ),
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child: Text(
+                              'Financial Year',
+                              style: textStyle14Bold,
+                            )),
+                            Expanded(
+                              child: Container(
+                                // height: 55,
+                                child: DropdownSearch<String>(
+                                  decoratorProps: DropDownDecoratorProps(
+                                    decoration: InputDecoration(
+                                      labelText: "Select Financial Year",
+                                      //hintText: "Select Duration",
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12.0),
+                                      ),
+                                      // labelStyle: TextStyle( fontSize: 20),
+                                    ),
+                                  ),
+                                  items: (filter, infiniteScrollProps) =>
+                                      postModel.financialYearDataList,
+                                  selectedItem: '--Select--',
+                                  onChanged: (String? _opdClaim) async {
+                                    postModel.fin_year = _opdClaim!;
+                                    homeModel.fin_year = _opdClaim!;
+                                    postModel.consultationDate =
+                                        "--Select Date--";
+                                    postModel.billDate = "--Select Date--";
+                                    postModel.admissiondate = "--Select Date--";
+                                    postModel.dischargedate = "--Select Date--";
+                                    postModel.prescriptionDate =
+                                        "--Select Date--";
+                                    postModel.notifyListeners();
+                                    postModel.getDataDetailOnDD(context,_opdClaim!);
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                Visibility(
+                  visible: claim == 'OPD CLAIM' && homeModel.fin_year != '',
+                  child: Column(
+                    children: [
+                      Text(
+                        'Remaining Entitlement',
+                        style: textStyle14Bold,
+                      ),
+                      Visibility(
+                        visible: postModel.financialYearSelect,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                  child: Text(
+                                'OPD',
+                                style: textStyle14Bold,
+                              )),
+                              Expanded(
+                                  child: Text(
+                                '${postModel.opdDetailModel?.opd}',
+                                style: textStyle14Bold,
+                              )),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Visibility(
+                        visible: postModel.financialYearSelect,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                  child: Text(
+                                'Spectacle',
+                                style: textStyle14Bold,
+                              )),
+                              Expanded(
+                                  child: Text(
+                                '${postModel.opdDetailModel?.specs} (Block Year: ${postModel.opdDetailModel?.specs_Block_year})',
+                                style: textStyle14Bold,
+                              )),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Container(
+                    // height: 40,
+                    decoration: const BoxDecoration(
+                      color: Color(0xffF6F3F3FF),
+                      borderRadius: BorderRadius.all(Radius.circular(
+                          10.0)), // Set rounded corner radius// Make rounded corner of border
+                    ),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          claim.toString(),
+                          style: textStyle14Bold,
                         ),
                       ),
                     ),
                   ),
-                  Visibility(
-                      visible: opdvisibility,
-                      child: opdWidget(postModel.claimtypemodel, postModel)),
-                  Visibility(
-                      visible: hospitalvisibility,
-                      child: hospitalWidget(postModel)),
-                  Padding(
-                    padding:
-                    const EdgeInsets.only(right: 8.0, left: 8.0, bottom: 20.0),
-                    child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 1,
-                        child: ElevatedButton(
-                            onPressed: () async {
+                ),
+                Visibility(
+                    visible: opdvisibility,
+                    child: opdWidget(postModel.claimtypemodel, postModel)),
+                Visibility(
+                    visible: hospitalvisibility,
+                    child: hospitalWidget(postModel)),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      right: 8.0, left: 8.0, bottom: 20.0),
+                  child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 1,
+                      child: ElevatedButton(
+                          onPressed: () async {
+                            SecureSharedPref sharedPref = await SecureSharedPref
+                                .getInstance();
+                            var empNo = await sharedPref.getString("EMP_NO");
+                            if (empNo == "Test01") {
+                              DialogUtils.showCustomDialog(context,
+                                  title: "Success",
+                                  description: "Your data saved successfully",
+                                  onpositivePressed: () {
+                                    Navigator.pop(context);
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                        MaterialPageRoute(builder: (context) =>
+                                            HomeScreen()), (
+                                        Route<dynamic> route) => false);
+                                  });
+                            } else {
                               postModel.focusNode.unfocus();
                               postModel.focusNodeamount.unfocus();
                               postModel.focusNoderemarks.unfocus();
@@ -421,15 +422,18 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                                     });
                               } else {
                                 if (postModel.claimtype == "4") {
+                                  postModel.blockYearSelected = "";
                                   if (validationHospitalization(postModel)) {
                                     postModel.getDataToList(context);
                                   }
                                 } else if (postModel.claimtype == "1") {
+                                  postModel.blockYearSelected = "";
                                   if (validationConsultation(postModel)) {
                                     postModel.getDataToList(context);
                                   }
                                   // postModel.getDataToList(context);
                                 } else if (postModel.claimtype == "2") {
+                                  postModel.blockYearSelected = "";
                                   if (validationMedicine(postModel)) {
                                     postModel.getDataToList(context);
                                   }
@@ -446,19 +450,42 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                                           for (ClaimDataList a
                                           in element.claimDataList) {
                                             amount =
-                                                amount + int.parse(a.amtClaimed);
+                                                amount +
+                                                    int.parse(a.amtClaimed);
                                           }
                                         }
                                         return false;
                                       }).toList();
                                       int finalAmount = amount +
-                                          int.parse(postModel.amountController.text
+                                          int.parse(postModel
+                                              .amountController.text
                                               .toString());
+                                      int opdAm = postModel.opdDetailModel!
+                                          .opd!;
+                                      int spectAm =
+                                      postModel.opdDetailModel!.specs!;
+
                                       if (postModel.opdDetailModel!.specs! >=
                                           finalAmount) {
-                                        postModel.blockYearSelected = postModel
-                                            .opdDetailModel!.specs_Block_year!;
-                                        postModel.getDataToList(context);
+                                        if (postModel.opdDetailModel!.opd! <=
+                                            finalAmount) {
+                                          DialogUtils.showCustomDialog(context,
+                                              title: "PRMS",
+                                              description:
+                                              'Spectacle claim amount within Spectacle entitlement but exceeds overall OPD entitlement.',
+                                              onpositivePressed: () {
+                                                Navigator.pop(context);
+                                                postModel.amountController
+                                                    .clear();
+                                                postModel.notifyListeners();
+                                              });
+                                        } else {
+                                          postModel.blockYearSelected =
+                                          postModel
+                                              .opdDetailModel!
+                                              .specs_Block_year!;
+                                          postModel.getDataToList(context);
+                                        }
                                       } else {
                                         DialogUtils.showCustomDialog(context,
                                             title: "PRMS",
@@ -466,48 +493,42 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                                             'Requested Amount exceeds entitlement amount',
                                             onpositivePressed: () {
                                               Navigator.pop(context);
-                                              postModel.amountController.clear();
+                                              postModel.amountController
+                                                  .clear();
                                               postModel.notifyListeners();
                                             });
                                       }
                                     } else {
+                                      postModel.blockYearSelected = "";
                                       postModel.getDataToList(context);
                                     }
                                   }
                                 } else if (postModel.claimtype == "3") {
+                                  postModel.blockYearSelected = "";
                                   if (validationTest(postModel)) {
                                     postModel.getDataToList(context);
                                   }
                                 }
                               }
-
-                              //
-                              // if (_formKey.currentState!.validate()) {
-                              //   _formKey.currentState!.save();
-                              //
-                              // }
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (context) => const HomeScreen()));
-                            },
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.amber,
-                                // padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-                                textStyle: const TextStyle(
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.amber,
+                              // padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                              textStyle: const TextStyle(
                                   // fontSize: 30,
-                                    fontWeight: FontWeight.bold)),
-                            child: const Text(
-                              "Add to list",
-            
-                              style: TextStyle(color: Colors.white),
-                            ))),
-                  )
-                ],
-              ),
+                                  fontWeight: FontWeight.bold)),
+                          child: const Text(
+                            "Add to list",
+                            style: TextStyle(color: Colors.white),
+                          ))),
+                )
+              ],
             ),
           ),
-        ),);
+        ),
+      ),
+    );
   }
 
   Widget opdWidget(
@@ -569,7 +590,7 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
   Widget hospitalWidget(ClaimTypeProvider postModel) {
     var homeProvider = Provider.of<HomeProvider>(context);
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Column(
@@ -579,7 +600,7 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
             child: BottomSheetWidget(
               content: "--Select Claim Type--",
               heading: "Claim Type",
-              claimtype: postModel.claimtypemodel!,
+              claimtype: postModel.claimtypemodel,
               onpressed: (val) {
                 postModel.claimtype = val;
               },
@@ -604,7 +625,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Bill No.',
-
                   style: textStyle14Bold,
                 )),
                 Expanded(
@@ -639,7 +659,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                         focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(width: 2, color: Colors.indigo),
+                          borderSide:
+                              BorderSide(width: 2, color: Colors.indigo),
                         ),
                       ),
                     ),
@@ -655,7 +676,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Bill Date',
-
                   style: textStyle14Bold,
                 )),
                 Expanded(
@@ -666,7 +686,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           width: 1,
                           color: Colors.black,
                         ),
-                        borderRadius: const BorderRadius.all(Radius.circular(5))),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(5))),
                     child: GestureDetector(
                         onTap: () async {
                           if (postModel.fin_year == '') {
@@ -715,7 +736,11 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                             alignment: Alignment.centerLeft,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text("${postModel.billDate}",textScaleFactor: MediaQuery.of(context).textScaleFactor,),
+                              child: Text(
+                                "${postModel.billDate}",
+                                textScaleFactor:
+                                    MediaQuery.of(context).textScaleFactor,
+                              ),
                             ))),
                   ),
                 ),
@@ -746,7 +771,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Admission Date',
-
                   style: textStyle14Bold,
                 )),
                 Expanded(
@@ -757,7 +781,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           width: 1,
                           color: Colors.black,
                         ),
-                        borderRadius: const BorderRadius.all(Radius.circular(5))),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(5))),
                     child: GestureDetector(
                         onTap: () async {
                           if (postModel.fin_year == '') {
@@ -772,7 +797,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
 
                           String fromMarch = "31/03/${suffix}";
 
-                          postModel.admissiondate = await admissionDate(context);
+                          postModel.admissiondate =
+                              await admissionDate(context);
 
                           ///Financial year check
                           if (postModel.admissiondate != '--Select Date--' &&
@@ -824,7 +850,11 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                             alignment: Alignment.centerLeft,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text("${postModel.admissiondate}",textScaleFactor: MediaQuery.of(context).textScaleFactor,),
+                              child: Text(
+                                "${postModel.admissiondate}",
+                                textScaleFactor:
+                                    MediaQuery.of(context).textScaleFactor,
+                              ),
                             ))),
                   ),
                 ),
@@ -838,7 +868,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Discharge Date',
-
                   style: textStyle14Bold,
                 )),
                 Expanded(
@@ -849,7 +878,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           width: 1,
                           color: Colors.black,
                         ),
-                        borderRadius: const BorderRadius.all(Radius.circular(5))),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(5))),
                     child: GestureDetector(
                         onTap: () async {
                           if (postModel.fin_year == '') {
@@ -863,7 +893,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           var suffix = parts[1].trim();
                           String fromMarch = "31/03/${suffix}";
 
-                          postModel.dischargedate = await dischargeDate(context);
+                          postModel.dischargedate =
+                              await dischargeDate(context);
 
                           ///Financial year check
                           if (postModel.dischargedate != '--Select Date--' &&
@@ -948,7 +979,11 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                             alignment: Alignment.centerLeft,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text("${postModel.dischargedate}",textScaleFactor: MediaQuery.of(context).textScaleFactor,),
+                              child: Text(
+                                "${postModel.dischargedate}",
+                                textScaleFactor:
+                                    MediaQuery.of(context).textScaleFactor,
+                              ),
                             ))),
                   ),
                 ),
@@ -999,7 +1034,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                         onTap: () {},
                         child: Text(
                           'Illness Detail',
-        
                           style: textStyle14Bold,
                         ))),
                 Expanded(
@@ -1027,7 +1061,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                         onTap: () {},
                         child: Text(
                           'Amount Claimed',
-        
                           style: textStyle14Bold,
                         ))),
                 Expanded(
@@ -1057,7 +1090,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                         focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(width: 2, color: Colors.indigo),
+                          borderSide:
+                              BorderSide(width: 2, color: Colors.indigo),
                         ),
                       ),
                     ),
@@ -1075,7 +1109,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                         onTap: () {},
                         child: Text(
                           'Remarks',
-        
                           style: textStyle14Bold,
                         ))),
                 Expanded(
@@ -1114,7 +1147,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                         focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(width: 2, color: Colors.indigo),
+                          borderSide:
+                              BorderSide(width: 2, color: Colors.indigo),
                         ),
                       ),
                     ),
@@ -1132,7 +1166,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                   Expanded(
                       child: Text(
                     '* As the discharge date is more than 3 months prior to today, so please attach approval from the concerned authority',
-  
                     style: textStyle14Bold,
                   )),
                   Flexible(
@@ -1153,7 +1186,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                             alignment: Alignment.center,
                             child: Text(
                               "Choose File",
-            
                               style: TextStyle(color: Colors.white),
                             )),
                       ),
@@ -1175,7 +1207,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           children: [
                             Text(
                               postModel.attachedAppDoc,
-            
                               style: textStyle14Bold,
                             ),
                             const Icon(Icons.file_copy),
@@ -1231,7 +1262,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           children: [
                             Text(
                               postModel.attachedDoc,
-            
                               style: textStyle14Bold,
                             ),
                             const Icon(Icons.file_copy),
@@ -1254,10 +1284,10 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                   });
                 },
               ),
-               Text(
+              Text(
                 'Prior/Post-Facto Permission Obtained ',
                 textScaleFactor: MediaQuery.of(context).textScaleFactor,
-                maxLines:2,
+                maxLines: 2,
                 style: TextStyle(fontSize: 11.0),
               ),
             ],
@@ -1373,7 +1403,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Consultation Date',
-
                   style: textStyle14Bold,
                 )),
                 Expanded(
@@ -1479,8 +1508,9 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                             alignment: Alignment.centerLeft,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text("${postModel.consultationDate}",
-            ),
+                              child: Text(
+                                "${postModel.consultationDate}",
+                              ),
                             ))),
                     // TextField(
                     //   decoration: InputDecoration(
@@ -1512,7 +1542,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Name of Physician',
-
                   style: textStyle14Bold,
                 )),
                 Expanded(
@@ -1569,7 +1598,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Amount Claimed',
-
                   style: textStyle14Bold,
                 )),
                 Expanded(
@@ -1633,7 +1661,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Remarks',
-
                   style: textStyle14Bold,
                 )),
                 Expanded(
@@ -1699,7 +1726,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                   Expanded(
                       child: Text(
                     '* Please attach approval from concerned authority for late claim submission',
-  
                     style: textStyle14Bold,
                   )),
                   Flexible(
@@ -1720,7 +1746,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                             alignment: Alignment.center,
                             child: Text(
                               "Choose File",
-            
                               style: TextStyle(color: Colors.white),
                             )),
                       ),
@@ -1742,7 +1767,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           children: [
                             Text(
                               postModel.attachedAppDoc,
-            
                               style: textStyle14Bold,
                             ),
                             const Icon(Icons.file_copy),
@@ -1796,7 +1820,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           children: [
                             Text(
                               postModel.attachedDoc,
-            
                               style: textStyle14Bold,
                             ),
                             const Icon(Icons.file_copy),
@@ -1811,7 +1834,7 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
   Widget MedicineWidget(ClaimTypeProvider postModel) {
     var homeProvider = Provider.of<HomeProvider>(context);
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Column(
@@ -1835,7 +1858,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Bill No.',
-
                   style: textStyle14Bold,
                 )),
                 Expanded(
@@ -1872,7 +1894,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                         focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(width: 2, color: Colors.indigo),
+                          borderSide:
+                              BorderSide(width: 2, color: Colors.indigo),
                         ),
                       ),
                     ),
@@ -1890,7 +1913,7 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
               onpressed: (val) {
                 postModel.chronical = val;
                 postModel.billDate = '--Select Date--';
-                postModel.prescriptionDate ='--Select Date--';
+                postModel.prescriptionDate = '--Select Date--';
                 setState(() {});
               },
             ),
@@ -1901,10 +1924,9 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
               children: [
                 Expanded(
                     child: Text(
-                      'Bill Date',
-
-                      style: textStyle14Bold,
-                    )),
+                  'Bill Date',
+                  style: textStyle14Bold,
+                )),
                 Expanded(
                   child: Container(
                     height: 40,
@@ -1913,7 +1935,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           width: 1,
                           color: Colors.black,
                         ),
-                        borderRadius: const BorderRadius.all(Radius.circular(5))),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(5))),
                     child: GestureDetector(
                         onTap: () async {
                           if (postModel.fin_year == '') {
@@ -1933,47 +1956,47 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           postModel.billDate = await admissionDate(context);
 
                           DateTime fromA =
-                          DateFormat("dd/MM/yyyy").parse(fromApril);
+                              DateFormat("dd/MM/yyyy").parse(fromApril);
                           DateTime fromS =
-                          DateFormat("dd/MM/yyyy").parse(toSeptember);
+                              DateFormat("dd/MM/yyyy").parse(toSeptember);
                           DateTime fromO =
-                          DateFormat("dd/MM/yyyy").parse(fromOct);
+                              DateFormat("dd/MM/yyyy").parse(fromOct);
                           DateTime fromM =
-                          DateFormat("dd/MM/yyyy").parse(fromMarch);
+                              DateFormat("dd/MM/yyyy").parse(fromMarch);
                           DateTime toDecember =
-                          DateFormat("dd/MM/yyyy").parse(toDecemberM);
+                              DateFormat("dd/MM/yyyy").parse(toDecemberM);
                           DateTime toJuneM =
-                          DateFormat("dd/MM/yyyy").parse(toJune);
+                              DateFormat("dd/MM/yyyy").parse(toJune);
 
-                          if (postModel.prescriptionDate != '--Select Date--') {
-                            DialogUtils.showCustomDialog(context,
-                                title: "PRMS",
-                                description:
-                                'Prescription date cannot be greater than bill date',
-                                onpositivePressed: () {
-                                  Navigator.pop(context);
-                                  postModel.prescriptionDate = '--Select Date--';
-                                  postModel.notifyListeners();
-                                });
-                          }
+                          // if (postModel.prescriptionDate != '--Select Date--') {
+                          //   DialogUtils.showCustomDialog(context,
+                          //       title: "PRMS",
+                          //       description:
+                          //           'Prescription date cannot be greater than bill date',
+                          //       onpositivePressed: () {
+                          //     Navigator.pop(context);
+                          //     postModel.prescriptionDate = '--Select Date--';
+                          //     postModel.notifyListeners();
+                          //   });
+                          // }
 
                           ///Financial year check
                           if (postModel.billDate != '--Select Date--') {
                             DateTime d = DateFormat("dd/MM/yyyy")
                                 .parse(postModel.billDate);
                             DateTime fromFinancialYear =
-                            DateFormat("dd/MM/yyyy").parse(fromApril);
+                                DateFormat("dd/MM/yyyy").parse(fromApril);
                             DateTime toFinancialYear =
-                            DateFormat("dd/MM/yyyy").parse(fromMarch);
+                                DateFormat("dd/MM/yyyy").parse(fromMarch);
                             //&& d.isAfter(fromO) && d.isBefore(fromM)
                             if ((d.isAfter(fromFinancialYear) ||
-                                d.isAtSameMomentAs(fromFinancialYear)) &&
+                                    d.isAtSameMomentAs(fromFinancialYear)) &&
                                 (d.isBefore(toFinancialYear) ||
                                     d.isAtSameMomentAs(toFinancialYear))) {
                               if ((d.isBefore(fromS) ||
                                   d.isAtSameMomentAs(fromS))) {
                                 if ((d.isAfter(fromA) ||
-                                    d.isAtSameMomentAs(fromS)) &&
+                                        d.isAtSameMomentAs(fromS)) &&
                                     (d.isBefore(fromS) ||
                                         d.isAtSameMomentAs(fromS)) &&
                                     (DateTime.now().isBefore(toDecember) ||
@@ -1985,7 +2008,7 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                                 }
                               } else {
                                 if ((d.isAfter(fromO) ||
-                                    d.isAtSameMomentAs(fromO)) &&
+                                        d.isAtSameMomentAs(fromO)) &&
                                     (d.isBefore(fromM) ||
                                         d.isAtSameMomentAs(fromM)) &&
                                     (DateTime.now().isBefore(toJuneM) ||
@@ -2016,13 +2039,13 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                               DialogUtils.showCustomDialog(context,
                                   title: "PRMS",
                                   description:
-                                  'Bill Date does not lie within the financial year',
+                                      'Bill Date does not lie within the financial year',
                                   onpositivePressed: () {
-                                    Navigator.pop(context);
-                                    postModel.billDate = "--Select Date--";
-                                    postModel.attachFile = false;
-                                    postModel.notifyListeners();
-                                  });
+                                Navigator.pop(context);
+                                postModel.billDate = "--Select Date--";
+                                postModel.attachFile = false;
+                                postModel.notifyListeners();
+                              });
                             }
                           }
                           setState(() {});
@@ -2031,7 +2054,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                             alignment: Alignment.centerLeft,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text("${postModel.billDate}",
+                              child: Text(
+                                "${postModel.billDate}",
                               ),
                             ))),
                   ),
@@ -2048,7 +2072,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                         onTap: () {},
                         child: Text(
                           'Prescription Date',
-
                           style: textStyle14Bold,
                         ))),
                 Expanded(
@@ -2059,7 +2082,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           width: 1,
                           color: Colors.black,
                         ),
-                        borderRadius: const BorderRadius.all(Radius.circular(5))),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(5))),
                     child: GestureDetector(
                         onTap: () async {
                           if (postModel.fin_year == '') {
@@ -2074,56 +2098,61 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           String fromMarch = "31/03/${suffix}";
 
                           postModel.prescriptionDate =
-                          await _selectPrescriptionDate(context, DateFormat('d/M/y').parse(postModel.billDate));
+                              await _selectPrescriptionDate(
+                                  context,
+                                  DateFormat('d/M/y')
+                                      .parse(postModel.billDate));
 
                           var chronical_non = postModel.chronical;
                           print("chronical non chronical :: $chronical_non");
 
                           var dateTime1 =
-                          DateFormat('d/M/y').parse(postModel.billDate);
+                              DateFormat('d/M/y').parse(postModel.billDate);
                           var dateTime2 = DateFormat('d/M/y')
                               .parse(postModel.prescriptionDate);
-                          DateTime dOneMonth = DateTime(dateTime2.year, dateTime2.month + 1, dateTime2.day);
+                          DateTime dOneMonth = DateTime(dateTime2.year,
+                              dateTime2.month + 1, dateTime2.day);
 
-                          DateTime dSixMonth = DateTime(dateTime2.year, dateTime2.month + 6, dateTime2.day);
-                          print(" DATE FROM :: $dSixMonth" );
-                          if(chronical_non == "Normal"){
-                            if (postModel.prescriptionDate != '--Select Date--' &&
+                          DateTime dSixMonth = DateTime(dateTime2.year,
+                              dateTime2.month + 6, dateTime2.day);
+                          print(" DATE FROM :: $dSixMonth");
+                          if (chronical_non == "Normal") {
+                            if (postModel.prescriptionDate !=
+                                    '--Select Date--' &&
                                 postModel.billDate != '--Select Date--') {
-                                         if(dOneMonth.isBefore(dateTime1) || dOneMonth.isAtSameMomentAs(dateTime1)){
-                                  DialogUtils.showCustomDialog(context,
-                                                title: "PRMS",
-                                                description:
-                                                'Prescription date cannot be greater than One Month to bill date',
-                                                onpositivePressed: () {
-                                                  Navigator.pop(context);
-                                                  postModel.prescriptionDate = "--Select Date--";
-                                                  // postModel.attachFile = false;
-                                                  postModel.notifyListeners();
-                                                });
-                                }else{
-
-                                }
-
-                            }
-                          }else{
-                            if (postModel.prescriptionDate != '--Select Date--' &&
-                                postModel.billDate != '--Select Date--') {
-                              if(dSixMonth.isBefore(dateTime1) || dSixMonth.isAtSameMomentAs(dateTime1)){
+                              if (dOneMonth.isBefore(dateTime1) ||
+                                  dOneMonth.isAtSameMomentAs(dateTime1)) {
                                 DialogUtils.showCustomDialog(context,
                                     title: "PRMS",
                                     description:
-                                    'Prescription date cannot be greater than Six Month to bill date',
+                                        'Prescription date cannot be greater than One Month to bill date',
                                     onpositivePressed: () {
-                                      Navigator.pop(context);
-                                      postModel.prescriptionDate = "--Select Date--";
-                                      // postModel.attachFile = false;
-                                      postModel.notifyListeners();
-                                    });
-                              }else{
-
-                              }
-
+                                  Navigator.pop(context);
+                                  postModel.prescriptionDate =
+                                      "--Select Date--";
+                                  // postModel.attachFile = false;
+                                  postModel.notifyListeners();
+                                });
+                              } else {}
+                            }
+                          } else {
+                            if (postModel.prescriptionDate !=
+                                    '--Select Date--' &&
+                                postModel.billDate != '--Select Date--') {
+                              if (dSixMonth.isBefore(dateTime1) ||
+                                  dSixMonth.isAtSameMomentAs(dateTime1)) {
+                                DialogUtils.showCustomDialog(context,
+                                    title: "PRMS",
+                                    description:
+                                        'Prescription date cannot be greater than Six Month to bill date',
+                                    onpositivePressed: () {
+                                  Navigator.pop(context);
+                                  postModel.prescriptionDate =
+                                      "--Select Date--";
+                                  // postModel.attachFile = false;
+                                  postModel.notifyListeners();
+                                });
+                              } else {}
                             }
                           }
 
@@ -2186,7 +2215,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                             alignment: Alignment.centerLeft,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text("${postModel.prescriptionDate}",
+                              child: Text(
+                                "${postModel.prescriptionDate}",
                               ),
                             ))),
                     // TextField(
@@ -2218,7 +2248,9 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                       maxLength: 9,
                       autocorrect: false,
                       keyboardType: TextInputType.number,
-                      inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
                       controller: postModel.amountController,
                       toolbarOptions: const ToolbarOptions(
                         copy: false,
@@ -2246,7 +2278,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                         focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(width: 2, color: Colors.indigo),
+                          borderSide:
+                              BorderSide(width: 2, color: Colors.indigo),
                         ),
                       ),
                     ),
@@ -2271,7 +2304,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Remarks',
-
                   style: textStyle14Bold,
                 )),
                 Expanded(
@@ -2337,7 +2369,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                             alignment: Alignment.center,
                             child: Text(
                               "Choose File",
-            
                               style: TextStyle(color: Colors.white),
                             )),
                       ),
@@ -2359,7 +2390,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           children: [
                             Text(
                               postModel.attachedAppDoc,
-            
                               style: textStyle14Bold,
                             ),
                             const Icon(Icons.file_copy),
@@ -2373,7 +2403,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Attach File',
-
                   style: textStyle14Bold,
                 )),
                 Flexible(
@@ -2414,7 +2443,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           children: [
                             Text(
                               postModel.attachedDoc,
-            
                               style: textStyle14Bold,
                             ),
                             const Icon(Icons.file_copy),
@@ -2429,7 +2457,7 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
   Widget OthersSpecWidget(ClaimTypeProvider postModel) {
     var homeProvider = Provider.of<HomeProvider>(context);
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Column(
@@ -2468,7 +2496,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Bill No.',
-
                   style: textStyle14Bold,
                 )),
                 Expanded(
@@ -2513,7 +2540,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                         focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(width: 2, color: Colors.indigo),
+                          borderSide:
+                              BorderSide(width: 2, color: Colors.indigo),
                         ),
                       ),
                     ),
@@ -2537,7 +2565,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Bill Date',
-
                   style: textStyle14Bold,
                 )),
                 Expanded(
@@ -2548,7 +2575,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           width: 1,
                           color: Colors.black,
                         ),
-                        borderRadius: const BorderRadius.all(Radius.circular(5))),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(5))),
                     child: GestureDetector(
                         onTap: () async {
                           if (postModel.fin_year == '') {
@@ -2581,6 +2609,39 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                               DateFormat("dd/MM/yyyy").parse(toJune);
 
                           ///Financial year check
+                          if (postModel.billDate != '--Select Date--' &&
+                              postModel.prescriptionDate != '--Select Date--') {
+                            var dateTime1 =
+                                DateFormat('d/M/y').parse(postModel.billDate);
+                            var dateTime2 = DateFormat('d/M/y')
+                                .parse(postModel.prescriptionDate);
+                            DateTime d = DateFormat("dd/MM/yyyy")
+                                .parse(postModel.prescriptionDate);
+                            DateTime fromFinancialYear =
+                                DateFormat("dd/MM/yyyy").parse(fromApril);
+                            DateTime toFinancialYear =
+                                DateFormat("dd/MM/yyyy").parse(fromMarch);
+                            if ((d.isAfter(fromFinancialYear) ||
+                                    d.isAtSameMomentAs(fromFinancialYear)) &&
+                                (d.isBefore(toFinancialYear) ||
+                                    d.isAtSameMomentAs(toFinancialYear))) {
+                              print(
+                                  "dateTime2 :: $dateTime2   dateTime1 :: $dateTime1");
+                              if ((dateTime2.isAfter(dateTime1))) {
+                                DialogUtils.showCustomDialog(context,
+                                    title: "PRMS",
+                                    description:
+                                        'Prescription date cannot be greater than bill date',
+                                    onpositivePressed: () {
+                                  postModel.prescriptionDate =
+                                      "--Select Date--";
+                                  postModel.billDate = "--Select Date--";
+                                  setState(() {});
+                                  Navigator.pop(context);
+                                });
+                              }
+                            }
+                          }
                           if (postModel.billDate != '--Select Date--') {
                             DateTime d = DateFormat("dd/MM/yyyy")
                                 .parse(postModel.billDate);
@@ -2589,6 +2650,9 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                             DateTime toFinancialYear =
                                 DateFormat("dd/MM/yyyy").parse(fromMarch);
                             //&& d.isAfter(fromO) && d.isBefore(fromM)
+
+                            print("d :: $d  fromS :: $fromS");
+
                             if ((d.isAfter(fromFinancialYear) ||
                                     d.isAtSameMomentAs(fromFinancialYear)) &&
                                 (d.isBefore(toFinancialYear) ||
@@ -2640,7 +2704,11 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                             alignment: Alignment.centerLeft,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text("${postModel.billDate}",textScaleFactor: MediaQuery.of(context).textScaleFactor,),
+                              child: Text(
+                                "${postModel.billDate}",
+                                textScaleFactor:
+                                    MediaQuery.of(context).textScaleFactor,
+                              ),
                             ))),
                   ),
                 ),
@@ -2654,7 +2722,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Prescription Date',
-
                   style: textStyle14Bold,
                 )),
                 Expanded(
@@ -2665,7 +2732,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           width: 1,
                           color: Colors.black,
                         ),
-                        borderRadius: const BorderRadius.all(Radius.circular(5))),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(5))),
                     child: GestureDetector(
                         onTap: () async {
                           if (postModel.fin_year == '') {
@@ -2699,13 +2767,18 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                                     d.isAtSameMomentAs(fromFinancialYear)) &&
                                 (d.isBefore(toFinancialYear) ||
                                     d.isAtSameMomentAs(toFinancialYear))) {
-                              if ((dateTime2.isAfter(dateTime1) ||
-                                  dateTime2.isAtSameMomentAs(dateTime1))) {
+                              print(
+                                  "dateTime2 :: $dateTime2   dateTime1 :: $dateTime1");
+                              if ((dateTime2.isAfter(dateTime1))) {
                                 DialogUtils.showCustomDialog(context,
                                     title: "PRMS",
                                     description:
                                         'Prescription date cannot be greater than bill date',
                                     onpositivePressed: () {
+                                  postModel.prescriptionDate =
+                                      "--Select Date--";
+                                  postModel.billDate = "--Select Date--";
+                                  setState(() {});
                                   Navigator.pop(context);
                                 });
                               }
@@ -2738,7 +2811,11 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                             alignment: Alignment.centerLeft,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text("${postModel.prescriptionDate}",textScaleFactor: MediaQuery.of(context).textScaleFactor,),
+                              child: Text(
+                                "${postModel.prescriptionDate}",
+                                textScaleFactor:
+                                    MediaQuery.of(context).textScaleFactor,
+                              ),
                             ))),
                   ),
                 ),
@@ -2749,7 +2826,10 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                Expanded(child: Text('Amount Claimed',textScaleFactor: MediaQuery.of(context).textScaleFactor ,style: textStyle14Bold)),
+                Expanded(
+                    child: Text('Amount Claimed',
+                        textScaleFactor: MediaQuery.of(context).textScaleFactor,
+                        style: textStyle14Bold)),
                 Expanded(
                   child: Container(
                     // height: 45,
@@ -2777,7 +2857,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                         focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(width: 2, color: Colors.indigo),
+                          borderSide:
+                              BorderSide(width: 2, color: Colors.indigo),
                         ),
                       ),
                     ),
@@ -2799,7 +2880,10 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                Expanded(child: Text('Remarks',textScaleFactor: MediaQuery.of(context).textScaleFactor, style: textStyle14Bold)),
+                Expanded(
+                    child: Text('Remarks',
+                        textScaleFactor: MediaQuery.of(context).textScaleFactor,
+                        style: textStyle14Bold)),
                 Expanded(
                   child: Container(
                     // height: 45,
@@ -2836,7 +2920,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                         focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(width: 2, color: Colors.indigo),
+                          borderSide:
+                              BorderSide(width: 2, color: Colors.indigo),
                         ),
                       ),
                     ),
@@ -2862,7 +2947,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                   Expanded(
                       child: Text(
                     '* Please attach approval from concerned authority for late claim submission',
-  
                     style: textStyle14Bold,
                   )),
                   Flexible(
@@ -2903,7 +2987,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           children: [
                             Text(
                               postModel.attachedAppDoc,
-            
                               style: textStyle14Bold,
                             ),
                             const Icon(Icons.file_copy),
@@ -2917,7 +3000,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Attach File',
-
                   style: textStyle14Bold,
                 )),
                 Flexible(
@@ -2930,13 +3012,13 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                       width: 300,
                       decoration: const BoxDecoration(
                         color: Colors.amber,
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set rounded corner radius// Make rounded corner of border
+                        borderRadius: BorderRadius.all(Radius.circular(
+                            10.0)), // Set rounded corner radius// Make rounded corner of border
                       ),
                       child: const Align(
                           alignment: Alignment.center,
                           child: Text(
                             "Choose File",
-          
                             style: TextStyle(color: Colors.white),
                           )),
                     ),
@@ -2957,7 +3039,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           children: [
                             Text(
                               postModel.attachedDoc,
-            
                               style: textStyle14Bold,
                             ),
                             const Icon(Icons.file_copy),
@@ -2972,7 +3053,7 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
   Widget TestopdWidget(ClaimTypeProvider postModel) {
     var homeProvider = Provider.of<HomeProvider>(context);
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Column(
@@ -2995,7 +3076,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Bill No.',
-
                   style: textStyle14Bold,
                 )),
                 Expanded(
@@ -3043,7 +3123,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                         focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(width: 2, color: Colors.indigo),
+                          borderSide:
+                              BorderSide(width: 2, color: Colors.indigo),
                         ),
                       ),
                     ),
@@ -3066,7 +3147,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Bill Date',
-
                   style: textStyle14Bold,
                 )),
                 Expanded(
@@ -3077,7 +3157,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           width: 1,
                           color: Colors.black,
                         ),
-                        borderRadius: const BorderRadius.all(Radius.circular(5))),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(5))),
                     child: GestureDetector(
                         onTap: () async {
                           if (postModel.fin_year == '') {
@@ -3180,7 +3261,11 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                             alignment: Alignment.centerLeft,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text("${postModel.billDate}",textScaleFactor: MediaQuery.of(context).textScaleFactor,),
+                              child: Text(
+                                "${postModel.billDate}",
+                                textScaleFactor:
+                                    MediaQuery.of(context).textScaleFactor,
+                              ),
                             ))),
                     // TextField(
                     //   decoration: InputDecoration(
@@ -3200,7 +3285,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Name Of Lab',
-
                   style: textStyle14Bold,
                 )),
                 Expanded(
@@ -3239,7 +3323,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                         focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(width: 2, color: Colors.indigo),
+                          borderSide:
+                              BorderSide(width: 2, color: Colors.indigo),
                         ),
                       ),
                     ),
@@ -3263,7 +3348,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Particulars of Test',
-
                   style: textStyle14Bold,
                 )),
                 Expanded(
@@ -3302,7 +3386,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                         focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(width: 2, color: Colors.indigo),
+                          borderSide:
+                              BorderSide(width: 2, color: Colors.indigo),
                         ),
                       ),
                     ),
@@ -3338,7 +3423,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Amount Claimed',
-
                   style: textStyle14Bold,
                 )),
                 Expanded(
@@ -3376,7 +3460,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                         focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(width: 2, color: Colors.indigo),
+                          borderSide:
+                              BorderSide(width: 2, color: Colors.indigo),
                         ),
                       ),
                     ),
@@ -3401,7 +3486,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Remarks',
-
                   style: textStyle14Bold,
                 )),
                 Expanded(
@@ -3440,7 +3524,8 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                         focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(width: 2, color: Colors.indigo),
+                          borderSide:
+                              BorderSide(width: 2, color: Colors.indigo),
                         ),
                       ),
                     ),
@@ -3466,7 +3551,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                   Expanded(
                       child: Text(
                     '* Please attach approval from concerned authority for late claim submission',
-  
                     style: textStyle14Bold,
                   )),
                   Flexible(
@@ -3487,7 +3571,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                             alignment: Alignment.center,
                             child: Text(
                               "Choose File",
-            
                               style: TextStyle(color: Colors.white),
                             )),
                       ),
@@ -3509,7 +3592,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           children: [
                             Text(
                               postModel.attachedAppDoc,
-            
                               style: textStyle14Bold,
                             ),
                             const Icon(Icons.file_copy),
@@ -3523,7 +3605,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                 Expanded(
                     child: Text(
                   'Attach File',
-
                   style: textStyle14Bold,
                 )),
                 Flexible(
@@ -3544,7 +3625,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           alignment: Alignment.center,
                           child: Text(
                             "Choose File",
-          
                             style: TextStyle(color: Colors.white),
                           )),
                     ),
@@ -3565,7 +3645,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           children: [
                             Text(
                               postModel.attachedDoc,
-            
                               style: textStyle14Bold,
                             ),
                             const Icon(Icons.file_copy),
@@ -3624,7 +3703,7 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
     return "${discharge.day}/${discharge.month}/${discharge.year}".toString();
   }
 
-  _selectPrescriptionDate(BuildContext context,DateTime lastdate) async {
+  _selectPrescriptionDate(BuildContext context, DateTime lastdate) async {
     final DateTime? selected = await showDatePicker(
       context: context,
       initialDate: lastdate,
@@ -3666,7 +3745,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                       child: const Padding(
                         padding: EdgeInsets.all(8.0),
                         child: Text('Select photo from gallery',
-          
                             style: TextStyle(fontSize: 13)),
                       )),
                 ),
@@ -3704,7 +3782,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                       padding: EdgeInsets.only(
                           top: 8.0, bottom: 8, left: 6, right: 6),
                       child: Text('Capture photo from camera',
-        
                           style: TextStyle(fontSize: 12)),
                     ),
                   ),
@@ -3728,7 +3805,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           top: 8.0, bottom: 8, left: 10, right: 15),
                       child: Text(
                         'Select files from phone',
-      
                         style: TextStyle(fontSize: 13),
                       ),
                     ),
@@ -3765,9 +3841,11 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                         ),
                       ),
                       // height: 50,
-                      child:  Padding(
+                      child: Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: Text('Select photo from gallery',textScaleFactor: MediaQuery.of(context).textScaleFactor,
+                        child: Text('Select photo from gallery',
+                            textScaleFactor:
+                                MediaQuery.of(context).textScaleFactor,
                             style: TextStyle(fontSize: 13)),
                       )),
                 ),
@@ -3805,7 +3883,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                       padding: EdgeInsets.only(
                           top: 8.0, bottom: 8, left: 6, right: 6),
                       child: Text('Capture photo from camera',
-        
                           style: TextStyle(fontSize: 12)),
                     ),
                   ),
@@ -3845,7 +3922,6 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
                           top: 8.0, bottom: 8, left: 10, right: 15),
                       child: Text(
                         'Select files from phone',
-      
                         style: TextStyle(fontSize: 13),
                       ),
                     ),
@@ -3969,6 +4045,9 @@ class _ClaimFormScreenState extends State<ClaimFormScreen> {
   bool validationOthers(ClaimTypeProvider postModel) {
     var dateTime1 = DateFormat('d/M/y').parse(postModel.billDate);
     var dateTime2 = DateFormat('d/M/y').parse(postModel.prescriptionDate);
+
+    print("dateTime :: $dateTime2   dateTime1 :: $dateTime1");
+
     if (postModel.patientname == '') {
       DialogUtils.showCustomDialog(context,
           title: "PRMS",

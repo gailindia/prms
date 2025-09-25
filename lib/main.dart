@@ -3,21 +3,19 @@ import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+// import 'package:flutter_riverpod/flutter_riverpod.dart' hide ChangeNotifierProvider;
 // import 'package:freerasp/freerasp.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import '../Provider/claimtypeProvider.dart';
 import '../Provider/homeprovider.dart';
 import '../Provider/loginProvider.dart';
 import '../Provider/medicalclaimstatusprovider.dart';
 import '../splash_screen.dart';
 
- 
-
 import 'package:provider/provider.dart';
 
-import 'jailbreak/threat_notifier.dart';
-import 'jailbreak/threat_state.dart';
-import 'jailbreak/widgets/malware_bottom_sheet.dart';
+// import 'jailbreak/threat_notifier.dart';
+// import 'jailbreak/threat_state.dart';
 
 /// Represents current state of the threats detectable by freeRASP
 // final threatProvider =
@@ -27,19 +25,29 @@ import 'jailbreak/widgets/malware_bottom_sheet.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  // String sha256Hex = "2C:93:84:DF:2D:5F:2A:03:FB:73:D5:14:14:78:9E:4C:46:36:C8:97:85:89:C8:87:87:4A:20:34:D5:D3:30:36";
-  //
-  //
+  String sha256Hex = "0E:88:63:95:D8:FB:B4:5D:2A:0A:A0:5D:84:B7:69:42:E3:39:32:CF:41:3B:F4:14:DA:71:F2:76:37:BF:1D:78";
+
   // String base64Hash = hashConverter.fromSha256toBase64(sha256Hex);
   // print(base64Hash);
 
-  // await _initializeTalsec(base64Hash);
+  // _initializeTalsec(base64Hash);
+  // runApp(ProviderScope(
+  //   child: MultiProvider(providers: [
+  //     ChangeNotifierProvider(create: (_) => ClaimTypeProvider()),
+  //     ChangeNotifierProvider(create: (_) => LoginProvider()),
+  //     ChangeNotifierProvider(create: (_) => MedicalClaimStatusProvider()),
+  //     ChangeNotifierProvider(create: (_) => HomeProvider()),
+  //
+  //   ], child:const MyApp()),
+  // ));
+
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => ClaimTypeProvider()),
     ChangeNotifierProvider(create: (_) => LoginProvider()),
     ChangeNotifierProvider(create: (_) => MedicalClaimStatusProvider()),
     ChangeNotifierProvider(create: (_) => HomeProvider()),
   ], child:const MyApp()));
+
 }
 
 /// Initialize Talsec configuration for Android and iOS
@@ -67,24 +75,37 @@ void main() {
 //   await Talsec.instance.start(config);
 // }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget{//ConsumerWidget
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {//, WidgetRef ref
     // final threatState = ref.watch(threatProvider);
-    // // Listen for changes in the threatProvider and show the malware modal
-    //
+    // Listen for changes in the threatProvider and show the malware modal
+
     // ref.listen(threatProvider, (prev, next) {
-    //   if (prev?.detectedMalware != next.detectedMalware) {
-    //   //  _showMalwareBottomSheet(context, next.detectedMalware);
+    //   if (prev?.detectedThreats == next.detectedThreats) {
+    //     print("prev.detectedThreats :: ${prev?.detectedThreats}");
+    //     print("next.detectedThreats :: ${next?.detectedThreats}");
     //   }
     // });
-    //
-    // threatState.detectedThreats.where((element) {
+
+    // var s = threatState.detectedThreats.where((element) {
+    //   print("detectedThreats :: ${element.name}");
+    //   if(element.name == 'privilegedAccess'){
+    //     return true;
+    //   }
     //   return false;
     // }).toList();
+
+    // s.isNotEmpty
+    //     ? Container(
+    //   child: Center(
+    //     child: Text("You cannot access this app"),
+    //   ),
+    // )
+    //     : SplashScreen(),
 
     return MaterialApp(
       title: 'Flutter Demo',
@@ -93,8 +114,12 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: SplashScreen(),
+      home:   SplashScreen()
     );
   }
+
+
+
+
 
 }

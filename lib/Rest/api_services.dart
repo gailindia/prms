@@ -755,12 +755,16 @@ class ApiService extends Services{
       Map<String,String> header = {
         'Authorization': 'Bearer $token'//
       };
+
+      print("getSubmitApi :: ${apiurl}");
       http.Response response = await http.get(Uri.parse(apiurl),headers: header);
       print("response on submit :: ${response.statusCode}   ${response}");
 
       if (response.statusCode == 200) {
         LoadingDialog.hide(context);
         var getData = response.body;
+        print("response on submit getData :: ${response.body}   ${getData}");
+
         DialogUtils.showCustomDialog(context,
             title: "PRMS", description: "Your data Submitted successfully",onpositivePressed:(){
               Navigator.pop(context);
@@ -814,6 +818,7 @@ class ApiService extends Services{
       //   'Authorization': 'Bearer ${prefs.getString('Token')}'
       // };
       http.Response response  = await http.post(Uri.parse(apiurl),body: _body);
+      print(response.body);
       if (response.statusCode == 200) {
         LoadingDialog.hide(context);
         var getData= jsonDecode(response.body);
@@ -966,6 +971,7 @@ class ApiService extends Services{
     try {
       String? emp = (await preferences.getString('EMP_NO'));
       String? grade = (await preferences.getString('GRADE'));
+      // String apiurl = "$kBaseUrl$KGetdataDetailOnDD${'grade=$grade&cpfNo=$emp&fin_year=$year'}";
       String apiurl = "$kBaseUrl$KGetdataDetailOnDD${'grade=$grade&cpfNo=$emp&fin_year=$year'}";
       String? token = (await preferences.getString('TOKEN',isEncrypted: true));
       Map<String,String> header = {

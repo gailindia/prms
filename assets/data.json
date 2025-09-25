@@ -1,0 +1,219 @@
+{
+  "getFinancialYear": [
+    {
+      "FIN_YEAR": "2025-2026"
+    }
+  ],
+  "dataDetailonDD": {
+    "StatusCode": 200,
+    "Message": "success",
+    "opd": 143969,
+    "hosp": 782948,
+    "specs": 33496,
+    "specs_Block_year": "2024-2026"
+  },
+  "OPD": {
+    "data": [
+      {
+        "Text": "--Select--",
+        "Value": "-1"
+      },
+      {
+        "Text": "Consultation/ Prescription",
+        "Value": "1"
+      },
+      {
+        "Text": "Medicines, Injections, Dressings  & other charges",
+        "Value": "2"
+      },
+      {
+        "Text": "Others- Spectacle\\hearing aid\\artificial dentures",
+        "Value": "5"
+      },
+      {
+        "Text": "Tests",
+        "Value": "3"
+      }
+    ]
+  },
+  "Hospitalisation": {
+    "data": [
+      {
+        "Text": "--Select--",
+        "Value": "-1"
+      },
+      {
+        "Text": "Hospitalisation",
+        "Value": "4"
+      }
+    ]
+  },
+  "getPatientName": {
+    "data": [
+      {
+        "Text": "Self",
+        "Value": "1"
+      },
+      {
+        "Text": "MRS. SABHA LAKSHMI PATNAIK",
+        "Value": "MRS. SABHA LAKSHMI PATNAIK"
+      }
+    ]
+  },
+  "getSystemOfMedicine": {
+    "data": [
+      {
+        "CODE": "-1",
+        "TYPE": "--Select--"
+      },
+      {
+        "CODE": "4",
+        "TYPE": "Allopathic"
+      },
+      {
+        "CODE": "2",
+        "TYPE": "Ayurvedic"
+      },
+      {
+        "CODE": "1",
+        "TYPE": "Homeopathy"
+      },
+      {
+        "CODE": "3",
+        "TYPE": "Unani & Tibetan"
+      }
+    ]
+  },
+  "getChronicalNormal": {
+    "data": [
+      {
+        "Text": "Normal",
+        "Value": "Normal"
+      },
+      {
+        "Text": "Chronical",
+        "Value": "Chronical"
+      }
+    ]
+  },
+  "getGetOtherClaim": {
+    "data": [
+      {
+        "Name": "--Select--",
+        "ID": "-1"
+      },
+      {
+        "Name": "Artificial Denture Reimbursement",
+        "ID": "2"
+      },
+      {
+        "Name": "Dental Treatment(Other than Denture)",
+        "ID": "1"
+      },
+      {
+        "Name": "Health Check up",
+        "ID": "3"
+      },
+      {
+        "Name": "Hearing Aid Reimbursement",
+        "ID": "5"
+      },
+      {
+        "Name": "Spectacles Reimbursement",
+        "ID": "4"
+      }
+    ],
+    "status_code": 200
+  },
+  "getTreatmenttypeData": {
+    "data": [
+      {
+        "CODE": "-1",
+        "TYPE": "--Select--"
+      },
+      {
+        "CODE": "DOH  ",
+        "TYPE": "Domicialary treat as Hospitalization"
+      },
+      {
+        "CODE": "HOS  ",
+        "TYPE": "Hospitalization"
+      }
+    ],
+    "status_code": 200
+  },
+  "getDomiciliaryData": {
+    "data": [
+      {
+        "CODE": "-1",
+        "TYPE": "--Select--"
+      },
+      {
+        "CODE": "HORMO",
+        "TYPE": "HORMONAL THERAPHY"
+      },
+      {
+        "CODE": "RADIA",
+        "TYPE": "RADIATION"
+      }
+    ],
+    "status_code": 200
+  },
+  "getCriticalIllnessData": {
+    "data": [
+      {
+        "CODE": "-1",
+        "TYPE": "--Select--"
+      },
+      {
+        "CODE": "CI9 ",
+        "TYPE": "AUTO-IMMUNE DISEASES INCLUD.ENCEPHALITIS(INF/AUTO-IMM.)"
+      },
+      {
+        "CODE": "CI1 ",
+        "TYPE": "CANCER"
+      },
+      {
+        "CODE": "CI10",
+        "TYPE": "CHRONIC LIVER DISEASES OR LIVER FAILURE"
+      },
+      {
+        "CODE": "CI4 ",
+        "TYPE": "COMA"
+      },
+      {
+        "CODE": "CI8 ",
+        "TYPE": "COVID19"
+      },
+      {
+        "CODE": "CI5 ",
+        "TYPE": "KIDNEY FAILURE REQUIRING REGULAR DIALYSIS"
+      },
+      {
+        "CODE": "CI12",
+        "TYPE": "LEPROSY"
+      },
+      {
+        "CODE": "CI6 ",
+        "TYPE": "MAJOR ORGAN/BONE MARROW TRANSPLANT"
+      },
+      {
+        "CODE": "CI2 ",
+        "TYPE": "OPEN CHEST CABG"
+      },
+      {
+        "CODE": "CI3 ",
+        "TYPE": "OPEN HEART REPLACEMENT OR REPAIR OF HEART VALVES"
+      },
+      {
+        "CODE": "CI7 ",
+        "TYPE": "STROKE RESULTING IN PERMANENT SYMPTOMS"
+      },
+      {
+        "CODE": "CI11",
+        "TYPE": "TUBERCULOSIS INCAPACITATING FROM WORK"
+      }
+    ],
+    "status_code": 200
+  }
+}

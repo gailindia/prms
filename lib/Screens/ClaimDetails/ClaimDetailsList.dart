@@ -1,9 +1,12 @@
+
 import 'package:flutter/material.dart';
-import '/Provider/medicalclaimstatusprovider.dart';
-import '/Screens/ClaimDetails/claimDetails_screen.dart';
-import '/Widget/customAppBar.dart';
- 
+import 'package:prms/Provider/medicalclaimstatusprovider.dart';
+import 'package:prms/Screens/ClaimDetails/claimDetails_screen.dart';
+import 'package:prms/Screens/ClaimDetails/dummyClaimDetailsList.dart';
+import 'package:prms/Widget/customAppBar.dart';
+
 import 'package:provider/provider.dart';
+import 'package:secure_shared_preferences/secure_shared_pref.dart';
 
 class ClaimDetailsListScreen extends StatefulWidget {
   const ClaimDetailsListScreen({super.key});
@@ -13,15 +16,31 @@ class ClaimDetailsListScreen extends StatefulWidget {
 }
 
 class _ClaimDetailsListScreenState extends State<ClaimDetailsListScreen> {
-
+  String? loggedInUser;
 
   @override
   void initState() {
-    // TODO: implement initState
+    _init();
     super.initState();
-    final medicalclaimstatus = Provider.of<MedicalClaimStatusProvider>(context, listen: false);
-    medicalclaimstatus.getmedicalClaimDetailsApi(context);
 
+  }
+  checkUser() async
+  {
+    SecureSharedPref sharedPref = await SecureSharedPref.getInstance();
+    var loggedInUsers = await sharedPref.getString("EMP_NO");
+    setState(() {
+      loggedInUser =  loggedInUsers;
+    });
+
+  }
+
+
+  Future<void> _init() async {
+    await checkUser();
+    if(loggedInUser != "Test01"){
+      final medicalclaimstatus = Provider.of<MedicalClaimStatusProvider>(context, listen: false);
+      medicalclaimstatus.getmedicalClaimDetailsApi(context);
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -30,7 +49,73 @@ class _ClaimDetailsListScreenState extends State<ClaimDetailsListScreen> {
         appBar: CustomAppBar(title: 'Claim Details',),
         body: Padding(
           padding: const EdgeInsets.all(10),
-          child:postModel.isloading == true ?Center(
+          child: (loggedInUser == "Test01")
+              ? ListView.builder(
+            itemCount: dummyClaimDetailsList.length,
+            shrinkWrap: true,
+            itemBuilder: (BuildContext context, int index) {
+              final claim = dummyClaimDetailsList[index];
+              return GestureDetector(
+                onTap: () {
+                  // In demo mode, just show dialog instead of navigating
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text("Demo Mode"),
+                      content: Text(
+                          "Viewing claim detail for ${claim.requestType} (${claim.requestDate})"),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          child: const Text("OK"),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Expanded(
+                          flex: 3,
+                          child: Text("Request Date",
+                              style: TextStyle(fontWeight: FontWeight.w600)),
+                        ),
+                        const Expanded(flex: 1, child: Text(":")),
+                        Expanded(
+                          flex: 5,
+                          child: Text(claim.requestDate,
+                              style:
+                              const TextStyle(fontWeight: FontWeight.w600)),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Expanded(
+                          flex: 3,
+                          child: Text("Request Type",
+                              style: TextStyle(fontWeight: FontWeight.w600)),
+                        ),
+                        const Expanded(flex: 1, child: Text(":")),
+                        Expanded(
+                          flex: 5,
+                          child: Text(claim.requestType,
+                              style:
+                              const TextStyle(fontWeight: FontWeight.w600)),
+                        ),
+                      ],
+                    ),
+                    const Divider(),
+                  ],
+                ),
+              );
+            },
+          )
+              :
+          postModel.isloading == true ?Center(
             child: SizedBox(
               height: MediaQuery.of(context).size.height * 0.3,
               width: MediaQuery.of(context).size.width * 0.3,
@@ -121,7 +206,7 @@ class _ClaimDetailsListScreenState extends State<ClaimDetailsListScreen> {
                               ),
                             ),
                             Expanded(
-                              flex: 1,
+                                flex: 1,
                                 child: Text(":")
                             ),
                             Expanded(
