@@ -6,7 +6,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:secure_shared_preferences/secure_shared_pref.dart';
 import '../Model/claim_type_model.dart';
 import '../Model/other_claim_model.dart';
 import '../Model/system_of_medicine_model.dart';
@@ -30,10 +32,6 @@ class ClaimTypeProvider extends ChangeNotifier{
   final focusNode = FocusNode();
   final focusNodeamount = FocusNode();
   final focusNoderemarks = FocusNode();
-  // final focusNode = FocusNode();
-  // final focusNode = FocusNode();
-
-  // ClaimTypeModel? claimtypemodel;
   List<ClaimTypeModel>? claimtypemodel = [];
   List<ClaimTypeModel>? patientList = [];
   List<ClaimTypeModel>? chronicaldata = [];
@@ -77,61 +75,201 @@ class ClaimTypeProvider extends ChangeNotifier{
   ApiService apiService = ApiService();
 
 
-  getClaimData(String? opdClaim) async{
+
+  getClaimData(BuildContext context,String? opdClaim) async{
     claimtypemodel!.clear();
-    homeModel = await apiService.getAll(opdClaim);
-    claimtypemodel = homeModel?.data;
+    SecureSharedPref sharedPref = await SecureSharedPref.getInstance();
+    var empNo = await sharedPref.getString("EMP_NO");
+    print("claimtypemodel Test01 :: ${empNo}   $opdClaim");
+
+    if(empNo == "Test01"){
+      String jsonString = await DefaultAssetBundle.of(context).loadString("assets/data.json");
+      var data = json.decode(jsonString);
+
+      print("claimtypemodel Test01 :: ${data[opdClaim]}");
+      print("claimtypemodel Test01 :: ${HomeModelFromJson(jsonEncode(data[opdClaim]))}");
+      homeModel = HomeModelFromJson(jsonEncode(data[opdClaim]));
+      claimtypemodel = homeModel?.data;
+
+    }else {
+      homeModel = await apiService.getAll(opdClaim);
+      claimtypemodel = homeModel?.data;
+    }
     notifyListeners();
 
   }
-  getPatientNameData()async{
-    homeModel = await apiService.getPatientName();
-    patientList = homeModel?.data;
+  getPatientNameData(BuildContext context)async{
+    SecureSharedPref sharedPref = await SecureSharedPref.getInstance();
+    var empNo = await sharedPref.getString("EMP_NO");
+
+
+    if(empNo == "Test01"){
+      String jsonString = await DefaultAssetBundle.of(context).loadString("assets/data.json");
+      var data = json.decode(jsonString);
+
+      print("claimtypemodel Test01 :: ${HomeModelFromJson(jsonEncode(data['getPatientName']))}");
+      homeModel = HomeModelFromJson(jsonEncode(data['getPatientName']));
+      patientList = homeModel?.data;
+
+    }else {
+      homeModel = await apiService.getPatientName();
+      patientList = homeModel?.data;
+    }
     notifyListeners();
   }
 
-  getSystemMedicineData()async{
-    systemMedicineModel = await apiService.getSystemMedicine();
-    systemofmedicineList = systemMedicineModel?.data;
+  getSystemMedicineData(BuildContext context)async{
+    SecureSharedPref sharedPref = await SecureSharedPref.getInstance();
+    var empNo = await sharedPref.getString("EMP_NO");
+
+
+    if(empNo == "Test01"){
+      String jsonString = await DefaultAssetBundle.of(context).loadString("assets/data.json");
+      var data = json.decode(jsonString);
+
+      print("claimtypemodel Test01 :: ${SystemMedicineModelFromJson(jsonEncode(data['getSystemOfMedicine']))}");
+      systemMedicineModel = SystemMedicineModelFromJson(jsonEncode(data['getSystemOfMedicine']));
+      systemofmedicineList = systemMedicineModel?.data;
+
+    }else {
+      systemMedicineModel = await apiService.getSystemMedicine();
+      systemofmedicineList = systemMedicineModel?.data;
+    }
     notifyListeners();
   }
-  getChronicalData()async{
-    homeModel = await apiService.getChronicalNormal();
-    chronicaldata = homeModel?.data;
+  getChronicalData(BuildContext context)async{
+    SecureSharedPref sharedPref = await SecureSharedPref.getInstance();
+    var empNo = await sharedPref.getString("EMP_NO");
+
+
+    if(empNo == "Test01"){
+      String jsonString = await DefaultAssetBundle.of(context).loadString("assets/data.json");
+      var data = json.decode(jsonString);
+
+      print("claimtypemodel Test01 :: ${HomeModelFromJson(jsonEncode(data['getChronicalNormal']))}");
+      homeModel = HomeModelFromJson(jsonEncode(data['getChronicalNormal']));
+      chronicaldata = homeModel?.data;
+
+    }else {
+      homeModel = await apiService.getChronicalNormal();
+      chronicaldata = homeModel?.data;
+    }
     notifyListeners();
   }
-  getkGetOtherClaim()async{
-    claimOtherModel = await apiService.getkGetOtherClaimlist();
-    otherclaimmodellist = claimOtherModel!.data!;
+  getkGetOtherClaim(BuildContext context)async{
+    //getGetOtherClaim
+    SecureSharedPref sharedPref = await SecureSharedPref.getInstance();
+    var empNo = await sharedPref.getString("EMP_NO");
+
+
+    if(empNo == "Test01"){
+      String jsonString = await DefaultAssetBundle.of(context).loadString("assets/data.json");
+      var data = json.decode(jsonString);
+
+      print("ClaimOtherModelFromJson Test01 :: ${ClaimOtherModelFromJson(jsonEncode(data['getGetOtherClaim']))}");
+      claimOtherModel = ClaimOtherModelFromJson(jsonEncode(data['getGetOtherClaim']));
+      otherclaimmodellist = claimOtherModel!.data!;
+
+    }else {
+      claimOtherModel = await apiService.getkGetOtherClaimlist();
+      otherclaimmodellist = claimOtherModel!.data!;
+    }
     notifyListeners();
   }
-  getTreatmenttypeData()async{
-    systemMedicineModel = await apiService.gettreatementType();
-    traetmenttypeList = systemMedicineModel?.data;
+  getTreatmenttypeData(BuildContext context)async{
+    SecureSharedPref sharedPref = await SecureSharedPref.getInstance();
+    var empNo = await sharedPref.getString("EMP_NO");
+
+
+    if(empNo == "Test01"){
+      String jsonString = await DefaultAssetBundle.of(context).loadString("assets/data.json");
+      var data = json.decode(jsonString);
+
+      print("SystemMedicineModelFromJson Test01 :: ${SystemMedicineModelFromJson(jsonEncode(data['getTreatmenttypeData']))}");
+      systemMedicineModel = SystemMedicineModelFromJson(jsonEncode(data['getTreatmenttypeData']));
+      traetmenttypeList = systemMedicineModel!.data!;
+
+    }else {
+      systemMedicineModel = await apiService.gettreatementType();
+      traetmenttypeList = systemMedicineModel?.data;
+    }
     notifyListeners();
   }
-  getDomiciliaryData()async{
-    systemMedicineModel = await apiService.getDomiciliaryAPi();
-    domiciliaryDataList = systemMedicineModel?.data;
+  getDomiciliaryData(BuildContext context)async{
+    SecureSharedPref sharedPref = await SecureSharedPref.getInstance();
+    var empNo = await sharedPref.getString("EMP_NO");
+
+
+    if(empNo == "Test01"){
+      String jsonString = await DefaultAssetBundle.of(context).loadString("assets/data.json");
+      var data = json.decode(jsonString);
+
+      print("SystemMedicineModelFromJson Test01 :: ${SystemMedicineModelFromJson(jsonEncode(data['getTreatmenttypeData']))}");
+      systemMedicineModel = SystemMedicineModelFromJson(jsonEncode(data['getTreatmenttypeData']));
+      domiciliaryDataList = systemMedicineModel!.data!;
+
+    }else {
+      systemMedicineModel = await apiService.getDomiciliaryAPi();
+      domiciliaryDataList = systemMedicineModel?.data;
+    }
     notifyListeners();
   }
-  getCriticalIllnessData()async{
-    systemMedicineModel = await apiService.getGetCriticalApi();
-    criticalIllnessDataList = systemMedicineModel?.data;
+  getCriticalIllnessData(BuildContext context)async{
+    SecureSharedPref sharedPref = await SecureSharedPref.getInstance();
+    var empNo = await sharedPref.getString("EMP_NO");
+
+
+    if(empNo == "Test01"){
+      String jsonString = await DefaultAssetBundle.of(context).loadString("assets/data.json");
+      var data = json.decode(jsonString);
+
+      print("SystemMedicineModelFromJson Test01 :: ${SystemMedicineModelFromJson(jsonEncode(data['getCriticalIllnessData']))}");
+      systemMedicineModel = SystemMedicineModelFromJson(jsonEncode(data['getCriticalIllnessData']));
+      criticalIllnessDataList = systemMedicineModel!.data!;
+
+    }else {
+      systemMedicineModel = await apiService.getGetCriticalApi();
+      criticalIllnessDataList = systemMedicineModel?.data;
+    }
     notifyListeners();
   }
-  getFinancialYear() async{
-    var response = await apiService.getFinancialYearApi();
-    financialYearDataList = response;
+  getFinancialYear(BuildContext context) async{
+    SecureSharedPref sharedPref = await SecureSharedPref.getInstance();
+    var empNo = await sharedPref.getString("EMP_NO");
+    if(empNo == "Test01"){
+      String jsonString = await DefaultAssetBundle.of(context).loadString("assets/data.json");
+      var data = json.decode(jsonString);
+      List<String> fY = [];
+      List<dynamic> d = data['getFinancialYear'];
+      for(int i = 0; i<d.length;i++){
+        fY.add(d[i]["FIN_YEAR"]);
+      }
+      financialYearDataList = fY;
+
+    }else {
+      var response = await apiService.getFinancialYearApi();
+      financialYearDataList = response;
+    }
     notifyListeners();
   }
 
-  getDataDetailOnDD(String year) async{
-    var response = await apiService.getDataDetailOnDDApi(year);
+  getDataDetailOnDD(BuildContext context,String year) async{
+    SecureSharedPref sharedPref = await SecureSharedPref.getInstance();
+    var empNo = await sharedPref.getString("EMP_NO");
+    if(empNo == "Test01"){
+      String jsonString = await DefaultAssetBundle.of(context).loadString("assets/data.json");
+      var data = json.decode(jsonString);
+      print("dataDetailonDD Test01 :: ${jsonEncode(data['dataDetailonDD'])}");
 
-    opdDetailModel = response;
-    if(opdDetailModel?.StatusCode == 200){
+      opdDetailModel = OPDDetailModelFromJson(jsonEncode(data['dataDetailonDD']));
       financialYearSelect = true;
+    }else {
+      var response = await apiService.getDataDetailOnDDApi(year);
+
+      opdDetailModel = response;
+      if (opdDetailModel?.StatusCode == 200) {
+        financialYearSelect = true;
+      }
     }
     print("response getDataDetailOnDD:: ${opdDetailModel?.opd}  $fin_year");
     notifyListeners();

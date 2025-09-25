@@ -28,30 +28,31 @@ class HomeProvider extends ChangeNotifier{
   String fin_year = '';
   String currentAppVersion = "";
 
-
-
   getCLaimData(BuildContext context) async{
-    var s = await apiService.ClaimDraftData(context);
-    print("ClaimDraftData ::$s");
-    Map<String,dynamic> m = jsonDecode(s);
-    if(m["data"]["ClaimData"]==null){
-      // claimDraftModel = claimDraftModelFromJson(s);
-      claimData = [];
-      claimDataType = [];
-      claimDate = [];
-      isFinancialYear = false;
-      fin_year = '';
-    }else{
-      claimDraftModel = claimDraftModelFromJson(s);
-      claimData = claimDraftModel?.data.claimData!;
+      var s = await apiService.ClaimDraftData(context);
+      print("ClaimDraftData ::$s");
+      Map<String, dynamic> m = jsonDecode(s);
+      if (m["data"]["ClaimData"] == null) {
+        // claimDraftModel = claimDraftModelFromJson(s);
+        claimData = [];
+        claimDataType = [];
+        claimDate = [];
+        isFinancialYear = false;
+        fin_year = '';
+      } else {
+        claimDraftModel = claimDraftModelFromJson(s);
+        claimData = claimDraftModel?.data.claimData!;
 
-      for(int i=0; i<claimData!.length;i++){
-
-        String claimType = claimData![i].claimType;
-        claimDataType?.add(claimType.toUpperCase());
-        claimDate?.add({'${claimType.toUpperCase()}':'${claimData![i].claimDataList[0].fin_year}'});
+        for (int i = 0; i < claimData!.length; i++) {
+          String claimType = claimData![i].claimType;
+          claimDataType?.add(claimType.toUpperCase());
+          claimDate?.add({
+            '${claimType.toUpperCase()}': '${claimData![i].claimDataList[0]
+                .fin_year}'
+          });
+        }
       }
-    }
+      getVersion(context);
     notifyListeners();
   }
 
@@ -78,19 +79,6 @@ class HomeProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  // onlyMessageProgress(context) async {
-  //   ProgressDialog pd = ProgressDialog(context: context);
-  //   pd.show(
-  //     barrierDismissible: true,
-  //     msg: "Please waiting...",
-  //     hideValue: true,
-  //   );
-  //   /** You can update the message value after a certain action **/
-  //   await Future.delayed(Duration(milliseconds: 1000));
-  //   pd.update(msg: "Almost done...");
-  //   await Future.delayed(Duration(milliseconds: 1000));
-  //   pd.close();
-  // }
 
 
   getDataDetailOnDD(String year) async{

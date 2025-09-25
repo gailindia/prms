@@ -1,9 +1,12 @@
+
 import 'package:flutter/material.dart';
-import '/Provider/medicalclaimstatusprovider.dart';
-import '/Screens/ClaimStatus/claim_status_details.dart';
-import '/Widget/customAppBar.dart';
- 
+import 'package:prms/Provider/medicalclaimstatusprovider.dart';
+import 'package:prms/Screens/ClaimStatus/claim_status_details.dart';
+import 'package:prms/Screens/ClaimStatus/guestClaimList.dart';
+import 'package:prms/Widget/customAppBar.dart';
+
 import 'package:provider/provider.dart';
+import 'package:secure_shared_preferences/secure_shared_pref.dart';
 
 class ClaimStatusListScreen extends StatefulWidget {
   const ClaimStatusListScreen({super.key});
@@ -13,13 +16,34 @@ class ClaimStatusListScreen extends StatefulWidget {
 }
 
 class _ClaimStatusListScreenState extends State<ClaimStatusListScreen> {
+  String? loggedInUser;
+
   @override
   void initState() {
     // TODO: implement initState
+    _init();
     super.initState();
-    final medicalclaimstatus =
-        Provider.of<MedicalClaimStatusProvider>(context, listen: false);
-    medicalclaimstatus.getmedicalClaimStatusApi(context);
+
+  }
+
+  checkUser() async
+  {
+    SecureSharedPref sharedPref = await SecureSharedPref.getInstance();
+    var loggedInUsers = await sharedPref.getString("EMP_NO");
+    setState(() {
+      loggedInUser =  loggedInUsers;
+    });
+
+  }
+
+
+  Future<void> _init() async {
+    await checkUser();
+    if(loggedInUser != "Test01") {
+      final medicalclaimstatus =
+      Provider.of<MedicalClaimStatusProvider>(context, listen: false);
+      medicalclaimstatus.getmedicalClaimStatusApi(context);
+    }
   }
 
   @override
@@ -34,7 +58,155 @@ class _ClaimStatusListScreenState extends State<ClaimStatusListScreen> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(10),
-          child: postModel.isloading == true
+          child:  (loggedInUser == "Test01")
+              ? ListView.builder(
+            itemCount: dummyClaimStatusList.length,
+            shrinkWrap: true,
+            itemBuilder: (BuildContext context, int index) {
+              final claim = dummyClaimStatusList[index];
+              return GestureDetector(
+                onTap: () {
+                  // For demo user, just show a simple dialog instead of navigation
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text("Demo Mode"),
+                      content: Text(
+                          "Viewing details for Claim Amount: ${claim.amount}"),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          child: const Text("OK"),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Expanded(
+                          flex: 3,
+                          child: Text("Claim Date",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black)),
+                        ),
+                        const Expanded(child: Text(":")),
+                        Expanded(flex: 4, child: Text(claim.date)),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Expanded(
+                          flex: 3,
+                          child: Text("Claim Amount",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black)),
+                        ),
+                        const Expanded(flex: 1, child: Text(":")),
+                        Expanded(flex: 4, child: Text(claim.amount)),
+                      ],
+                    ),
+                    if (claim.status.toUpperCase() == "PROCESSING")
+                      Row(
+                        children: [
+                          const Expanded(
+                            flex: 3,
+                            child: Text("Claim Status",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black)),
+                          ),
+                          const Expanded(flex: 1, child: Text(":")),
+                          Expanded(
+                              flex: 4,
+                              child: Text(claim.status,
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      color: Color.fromARGB(210, 240, 163, 100)))),
+                        ],
+                      ),
+                    if (claim.status.toUpperCase() == "PAID")
+                      Row(
+                        children: [
+                          const Expanded(
+                            flex: 3,
+                            child: Text("Claim Status",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black)),
+                          ),
+                          const Expanded(flex: 1, child: Text(":")),
+                          Expanded(
+                            flex: 4,
+                            child: Text(claim.status,
+                                style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.green)),
+                          ),
+                        ],
+                      ),
+                    if (claim.status.toUpperCase() == "REJECTED")
+                      Row(
+                        children: [
+                          const Expanded(
+                            flex: 3,
+                            child: Text("Claim Status",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black)),
+                          ),
+                          const Expanded(flex: 1, child: Text(":")),
+                          Expanded(
+                            flex: 4,
+                            child: Text(claim.status,
+                                style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.red)),
+                          ),
+                        ],
+                      ),
+                    const Divider(),
+                  ],
+                ),
+              );
+            },
+          )
+              : postModel.isloading == true
+              ? Center(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.3,
+              width: MediaQuery.of(context).size.width * 0.3,
+              child: const Column(
+                children: [
+                  CircularProgressIndicator(
+                    backgroundColor: Color.fromARGB(255, 11, 50, 124),
+                    color: Color.fromARGB(210, 240, 163, 100),
+                  ),
+                  SizedBox(height: 12),
+                  Text("Loading",
+                      style: TextStyle(
+                          color: Colors.amber,
+                          fontWeight: FontWeight.w600)),
+                ],
+              ),
+            ),
+          )
+              :
+
+          postModel.isloading == true
               ? Center(
             child: SizedBox(
               height: MediaQuery.of(context).size.height * 0.3,

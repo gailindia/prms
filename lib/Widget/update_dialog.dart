@@ -63,22 +63,7 @@ class _CustomDialog extends StatelessWidget {
                         letterSpacing: 0.55,
                         fontWeight: FontWeight.w600,
                       ), textAlign: TextAlign.center),
-                  // Container(
-                  //   height: 1.5,
-                  //   margin: const EdgeInsets.symmetric(vertical: 20),
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.center,
-                  //     children: List.generate(
-                  //       12,
-                  //       (index) => Container(
-                  //         width: 6,
-                  //         height: 1.5,
-                  //         color: colorController.kPrimaryDarkColor,
-                  //         margin: const EdgeInsets.symmetric(horizontal: 2),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
+
                   Container(
                     margin: const EdgeInsets.only(top: 10),
                     child: Text('Please update the latest version of PRMS!',

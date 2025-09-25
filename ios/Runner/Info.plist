@@ -49,5 +49,10 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app needs access to your location when in use to determine your region.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>This app needs access to your location even when in the background to provide continuous region-based features.</string>
 </dict>
 </plist>

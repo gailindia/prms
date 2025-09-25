@@ -55,13 +55,13 @@ class _UpdateFormDataState extends State<UpdateFormData> {
     super.initState();
     final claimTypeProvider =
         Provider.of<ClaimTypeProvider>(context, listen: false);
-    claimTypeProvider.getPatientNameData();
-    claimTypeProvider.getSystemMedicineData();
-    claimTypeProvider.getChronicalData();
-    claimTypeProvider.getkGetOtherClaim();
-    claimTypeProvider.getTreatmenttypeData();
-    claimTypeProvider.getDomiciliaryData();
-    claimTypeProvider.getCriticalIllnessData();
+    claimTypeProvider.getPatientNameData(context);
+    claimTypeProvider.getSystemMedicineData(context);
+    claimTypeProvider.getChronicalData(context);
+    claimTypeProvider.getkGetOtherClaim(context);
+    claimTypeProvider.getTreatmenttypeData(context);
+    claimTypeProvider.getDomiciliaryData(context);
+    claimTypeProvider.getCriticalIllnessData(context);
     claimTypeProvider.consultationNumberController.text =
         widget.todo!.consulationNo;
     claimTypeProvider.physicianController.text = widget.todo!.physicianName;
@@ -2285,6 +2285,7 @@ class _UpdateFormDataState extends State<UpdateFormData> {
                                   d.isAtSameMomentAs(fromFinancialYear)) &&
                               (d.isBefore(toFinancialYear) ||
                                   d.isAtSameMomentAs(toFinancialYear))) {
+                            print("dateTime2 :: $dateTime2  dateTime1 :: $dateTime1");
                             if (dateTime2.isAfter(dateTime1)) {
                               DialogUtils.showCustomDialog(context,
                                   title: "PRMS",
